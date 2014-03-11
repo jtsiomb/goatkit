@@ -87,6 +87,10 @@ float Widget::get_visibility() const
 	return vis;
 }
 
+void Widget::activate()
+{
+}
+
 #ifdef WIN32
 long gameui::get_cur_time()
 {
