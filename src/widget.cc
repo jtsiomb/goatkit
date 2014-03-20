@@ -1,20 +1,16 @@
 #include <string>
-#include <stringstream>
+#include <sstream>
 #include "widget.h"
+#include "boolanm.h"
 
 using namespace gameui;
 
-class WidgetImpl {
-public:
+struct WidgetImpl {
 	std::string name_prefix;
 	std::string name;
 	BBox box;
-	VisState vis_st;
-	ActiveState act_st;
 
-	float vis, act;
-
-	long vis_start_time, act_start_time;
+	BoolAnim visible, active, press, hover;
 };
 
 

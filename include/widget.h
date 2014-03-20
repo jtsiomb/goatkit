@@ -16,7 +16,7 @@ public:
 	Vec2 bmin, bmax;
 };
 
-class WidgetImpl;
+struct WidgetImpl;
 
 class Widget {
 private:
