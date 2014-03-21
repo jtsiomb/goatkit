@@ -5,11 +5,11 @@
 
 namespace gameui {
 
-class ButtonImpl;
+struct ButtonImpl;
 
-class Button {
+class Button : public Widget {
 private:
-	ButtonImpl *impl;
+	ButtonImpl *button;
 
 public:
 	Button();

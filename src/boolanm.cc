@@ -4,10 +4,9 @@ static long default_get_msec();
 
 BoolAnim::BoolAnim(bool st)
 {
-	value = st ? 1.0 : 0.0;
-	trans_dir = 0.0;
+	set(st);
 	trans_start = 0;
-	trans_dur = 1000;
+	trans_dur = 500;
 	get_msec = default_get_msec;
 }
 
@@ -41,6 +40,12 @@ void BoolAnim::set_transition_duration(long dur)
 void BoolAnim::set_time_callback(long (*time_func)())
 {
 	get_msec = time_func;
+}
+
+void BoolAnim::set(bool st)
+{
+	value = st ? 1.0 : 0.0;
+	trans_dir = 0.0;
 }
 
 void BoolAnim::change(bool st)

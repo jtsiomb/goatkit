@@ -3,9 +3,9 @@ obj = $(src:.cc=.o)
 
 bin = test
 
-CFLAGS = -pedantic -Wall -g -Iinclude
+CFLAGS = -pedantic -Wall -g -Iinclude -Isrc
 CXXFLAGS = $(CFLAGS)
-LDFLAGS = -lGL -lGLU -lglut
+LDFLAGS = -lGL -lGLU -lglut -lpthread
 
 $(bin): $(obj)
 	$(CXX) -o $@ $(obj) $(LDFLAGS)

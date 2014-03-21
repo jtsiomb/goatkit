@@ -18,6 +18,8 @@ public:
 	void set_transition_duration(long dur);
 	void set_time_callback(long (*time_func)());
 
+	void set(bool st);
+
 	void change(bool st);
 	void change(bool st, long trans_start);
 
