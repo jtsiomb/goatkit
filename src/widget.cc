@@ -9,7 +9,6 @@
 namespace goatkit {
 
 struct WidgetImpl {
-	std::string type_str;
 	std::string name;
 	BBox box;
 
@@ -22,10 +21,9 @@ Widget::Widget()
 	static int widget_count;
 
 	widget = new WidgetImpl;
-	set_type_string("widget");
 
 	std::stringstream sstr;
-	sstr << widget->type_str << widget_count++;
+	sstr << get_type_name() << widget_count++;
 	widget->name = sstr.str();
 
 	widget->box.bmin = Vec2(0, 0);
@@ -41,6 +39,11 @@ Widget::Widget()
 Widget::~Widget()
 {
 	delete widget;
+}
+
+const char *Widget::get_type_name() const
+{
+	return "widget";
 }
 
 void Widget::show()
@@ -173,10 +176,10 @@ bool Widget::hit_test(const Vec2 &pt) const
 
 void Widget::draw() const
 {
-	widget_draw_func draw_func = default_draw_func;
+	WidgetDrawFunc draw_func = default_draw_func;
 
 	if(theme) {
-		draw_func = theme->get_draw_func(widget->type_str.c_str());
+		draw_func = theme->get_draw_func(get_type_name());
 	}
 
 	draw_func(this);
@@ -211,11 +214,6 @@ void Widget::on_change()
 {
 }
 
-
-void Widget::set_type_string(const char *type_str)
-{
-	widget->type_str = type_str;
-}
 
 /* the event dispatcher generates high-level events (click, etc)
  * and calls the on_whatever() functions for both low and high-level

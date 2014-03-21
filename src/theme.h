@@ -3,27 +3,29 @@
 
 #include <string>
 #include <map>
+#include "goatkit.h"
 
 namespace goatkit {
 
 class Widget;
 
-typedef void (*widget_draw_func)(const Widget*);
-
+void add_theme_path(const char *path);
 void default_draw_func(const Widget *w);
 
 class Theme {
 private:
 	void *so;
-	std::map<std::string, widget_draw_func> draw_func;
+	WidgetDrawFunc (*lookup_theme_draw_func)(const char*);
+	mutable std::map<std::string, WidgetDrawFunc> func_cache;
 
 public:
 	Theme();
 	~Theme();
 
 	bool load(const char *name);
+	void unload();
 
-	widget_draw_func get_draw_func(const char *type) const;
+	WidgetDrawFunc get_draw_func(const char *type) const;
 };
 
 extern Theme *theme;	// the current theme

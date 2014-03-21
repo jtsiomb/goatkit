@@ -14,6 +14,8 @@ private:
 public:
 	Button();
 	virtual ~Button();
+
+	virtual const char *get_type_name() const;
 };
 
 }	// namespace goatkit

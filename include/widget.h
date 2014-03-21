@@ -16,11 +16,11 @@ class Widget {
 private:
 	WidgetImpl *widget;
 
-	void set_type_string(const char *type_str);
-
 public:
 	Widget();
 	virtual ~Widget();
+
+	virtual const char *get_type_name() const;
 
 	virtual void show();
 	virtual void hide();
