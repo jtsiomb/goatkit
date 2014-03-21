@@ -4,7 +4,7 @@
 #include <string>
 #include <map>
 
-namespace gameui {
+namespace goatkit {
 
 class Widget;
 
@@ -28,6 +28,6 @@ public:
 
 extern Theme *theme;	// the current theme
 
-}	// namespace gameui
+}	// namespace goatkit
 
 #endif	// THEME_H_

@@ -3,7 +3,7 @@
 
 #include "vec.h"
 
-namespace gameui {
+namespace goatkit {
 
 enum EventType {
 	EV_MOUSE_BUTTON,
@@ -40,6 +40,6 @@ struct Event {
 	KeyEvent key;
 };
 
-}	// namespace gameui
+}	// namespace goatkit
 
 #endif	// EVENT_H_

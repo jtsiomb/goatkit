@@ -1,10 +1,10 @@
-#ifndef GAMEUI_WIDGET_H_
-#define GAMEUI_WIDGET_H_
+#ifndef GOATKIT_WIDGET_H_
+#define GOATKIT_WIDGET_H_
 
 #include "vec.h"
 #include "event.h"
 
-namespace gameui {
+namespace goatkit {
 
 struct BBox {
 	Vec2 bmin, bmax;
@@ -75,4 +75,4 @@ public:
 
 }
 
-#endif	// GAMEUI_WIDGET_H_
+#endif	// GOATKIT_WIDGET_H_

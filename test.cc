@@ -3,7 +3,7 @@
 #include <assert.h>
 #include <vector>
 #include <GL/glut.h>
-#include "gameui.h"
+#include "goatkit.h"
 
 static bool init();
 static void cleanup();
@@ -17,14 +17,14 @@ static void skeyrelease(int key, int x, int y);
 static void mouse(int bn, int st, int x, int y);
 static void motion(int x, int y);
 
-static std::vector<gameui::Widget*> widgets;
+static std::vector<goatkit::Widget*> widgets;
 
 int main(int argc, char **argv)
 {
 	glutInitWindowSize(800, 600);
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
-	glutCreateWindow("gameui test");
+	glutCreateWindow("goatkit test");
 
 	glutDisplayFunc(disp);
 	glutIdleFunc(idle);
@@ -49,7 +49,7 @@ int main(int argc, char **argv)
 
 static bool init()
 {
-	gameui::Button *button = new gameui::Button;
+	goatkit::Button *button = new goatkit::Button;
 	button->set_position(350, 280);
 	button->set_size(100, 40);
 	widgets.push_back(button);
@@ -115,14 +115,14 @@ static void mouse(int bn, int st, int x, int y)
 	bool down = st == GLUT_DOWN;
 
 	for(size_t i=0; i<widgets.size(); i++) {
-		gameui::Widget *w = widgets[i];
+		goatkit::Widget *w = widgets[i];
 
-		if(w->hit_test(gameui::Vec2(x, y))) {
-			gameui::Event ev;
-			ev.type = gameui::EV_MOUSE_BUTTON;
+		if(w->hit_test(goatkit::Vec2(x, y))) {
+			goatkit::Event ev;
+			ev.type = goatkit::EV_MOUSE_BUTTON;
 			ev.button.button = bidx;
 			ev.button.press = down;
-			ev.button.pos = gameui::Vec2(x, y);
+			ev.button.pos = goatkit::Vec2(x, y);
 			w->handle_event(ev);
 		}
 	}
@@ -130,23 +130,23 @@ static void mouse(int bn, int st, int x, int y)
 
 static void motion(int x, int y)
 {
-	static gameui::Widget *active;
+	static goatkit::Widget *active;
 
-	if(active && !active->hit_test(gameui::Vec2(x, y))) {
-		gameui::Event ev;
-		ev.type = gameui::EV_MOUSE_FOCUS;
+	if(active && !active->hit_test(goatkit::Vec2(x, y))) {
+		goatkit::Event ev;
+		ev.type = goatkit::EV_MOUSE_FOCUS;
 		ev.focus.enter = false;
 		active->handle_event(ev);
 		active = 0;
 	}
 
 	for(size_t i=0; i<widgets.size(); i++) {
-		gameui::Widget *w = widgets[i];
+		goatkit::Widget *w = widgets[i];
 
-		if(w->hit_test(gameui::Vec2(x, y))) {
+		if(w->hit_test(goatkit::Vec2(x, y))) {
 			if(active != w) {
-				gameui::Event ev;
-				ev.type = gameui::EV_MOUSE_FOCUS;
+				goatkit::Event ev;
+				ev.type = goatkit::EV_MOUSE_FOCUS;
 				ev.focus.enter = true;
 				w->handle_event(ev);
 				active = w;

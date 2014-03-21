@@ -12,7 +12,7 @@
 #endif
 
 
-namespace gameui {
+namespace goatkit {
 
 Theme *theme;
 
@@ -97,4 +97,4 @@ void default_draw_func(const Widget *w)
 	glPopAttrib();
 }
 
-}	// namespace gameui
+}	// namespace goatkit

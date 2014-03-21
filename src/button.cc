@@ -1,6 +1,6 @@
 #include "button.h"
 
-namespace gameui {
+namespace goatkit {
 
 struct ButtonImpl {
 };
@@ -15,4 +15,4 @@ Button::~Button()
 	delete button;
 }
 
-}	// namespace gameui
+}	// namespace goatkit

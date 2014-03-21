@@ -6,7 +6,7 @@
 #include "boolanm.h"
 #include "theme.h"
 
-namespace gameui {
+namespace goatkit {
 
 struct WidgetImpl {
 	std::string type_str;
@@ -263,4 +263,4 @@ void Widget::handle_event(const Event &ev)
 }
 
 
-}	// namespace gameui
+}	// namespace goatkit

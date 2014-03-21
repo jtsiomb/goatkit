@@ -1,7 +1,7 @@
 #ifndef VEC_H_
 #define VEC_H_
 
-namespace gameui {
+namespace goatkit {
 
 class Vec2 {
 public:
@@ -11,6 +11,6 @@ public:
 	Vec2(float xx, float yy) : x(xx), y(yy) {}
 };
 
-}	// namespace gameui
+}	// namespace goatkit
 
 #endif	// VEC_H_

@@ -1,7 +1,7 @@
-#ifndef GAMEUI_LABEL_H_
-#define GAMEUI_LABEL_H_
+#ifndef GOATKIT_LABEL_H_
+#define GOATKIT_LABEL_H_
 
-namespace gameui {
+namespace goatkit {
 
 class LabelImpl;
 
@@ -14,6 +14,6 @@ public:
 	virtual ~Label();
 };
 
-}
+}	// namespace goatkit
 
-#endif	// GAMEUI_LABEL_H_
+#endif	// GOATKIT_LABEL_H_

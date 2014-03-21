@@ -1,9 +1,9 @@
-#ifndef GAMEUI_BUTTON_H_
-#define GAMEUI_BUTTON_H_
+#ifndef GOATKIT_BUTTON_H_
+#define GOATKIT_BUTTON_H_
 
 #include "widget.h"
 
-namespace gameui {
+namespace goatkit {
 
 struct ButtonImpl;
 
@@ -16,6 +16,6 @@ public:
 	virtual ~Button();
 };
 
-}
+}	// namespace goatkit
 
-#endif	// GAMEUI_BUTTON_H_
+#endif	// GOATKIT_BUTTON_H_
