@@ -22,6 +22,12 @@ public:
 
 	virtual const char *get_type_name() const;
 
+	virtual void set_name(const char *name);
+	virtual const char *get_name() const;
+
+	virtual void set_text(const char *text);
+	virtual const char *get_text() const;
+
 	virtual void show();
 	virtual void hide();
 	virtual float get_visibility() const;

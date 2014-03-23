@@ -9,7 +9,7 @@
 namespace goatkit {
 
 struct WidgetImpl {
-	std::string name;
+	std::string name, text;
 	BBox box;
 
 	BoolAnim visible, active, press, hover;
@@ -44,6 +44,26 @@ Widget::~Widget()
 const char *Widget::get_type_name() const
 {
 	return "widget";
+}
+
+void Widget::set_name(const char *name)
+{
+	widget->name = std::string(name);
+}
+
+const char *Widget::get_name() const
+{
+	return widget->name.c_str();
+}
+
+void Widget::set_text(const char *text)
+{
+	widget->text = std::string(text);
+}
+
+const char *Widget::get_text() const
+{
+	return widget->text.c_str();
 }
 
 void Widget::show()
