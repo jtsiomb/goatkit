@@ -54,8 +54,11 @@ int main(int argc, char **argv)
 static bool init()
 {
 	goatkit::Button *button = new goatkit::Button;
-	button->set_position(350, 280);
-	button->set_size(100, 40);
+	button->set_position(300, 270);
+	button->set_size(200, 60);
+	button->set_text("a button!");
+	button->hide();
+	button->show();
 	widgets.push_back(button);
 
 	// load the theme
@@ -97,13 +100,24 @@ static void reshape(int x, int y)
 	glViewport(0, 0, x, y);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho(0, x, 0, y, -1, 1);
+	glOrtho(0, x, y, 0, -1, 1);
 }
 
 static void keypress(unsigned char key, int x, int y)
 {
-	if(key == 27) {
+	switch(key) {
+	case 27:
 		exit(0);
+
+	case 'v':
+		if(!widgets.empty()) {
+			if(widgets[0]->is_visible()) {
+				widgets[0]->hide();
+			} else {
+				widgets[0]->show();
+			}
+		}
+		break;
 	}
 }
 

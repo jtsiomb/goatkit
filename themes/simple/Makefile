@@ -2,7 +2,7 @@ src = $(wildcard *.cc)
 obj = $(src:.cc=.o)
 lib_so = simple.gtheme
 
-CXXFLAGS = -pedantic -Wall -g -I../../include
+CXXFLAGS = -pedantic -Wall $(pic) -g -I../../include
 LDFLAGS = $(libgl)
 
 ifeq ($(shell uname -s), Darwin)
@@ -12,6 +12,7 @@ ifeq ($(shell uname -s), Darwin)
 else
 	libgl = -lGL -lGLU -lglut
 	shared = -shared
+	pic = -fPIC
 endif
 
 $(lib_so): $(obj)
