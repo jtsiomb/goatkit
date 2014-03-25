@@ -5,9 +5,6 @@
 #include "button.h"
 #include "label.h"
 #include "event.h"
-
-namespace goatkit {
-	typedef void (*WidgetDrawFunc)(const Widget*);
-}
+#include "theme.h"
 
 #endif	// GOATKIT_H_

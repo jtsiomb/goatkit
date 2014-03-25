@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <vector>
+#include <string>
+#include <map>
 #include <algorithm>
 #include "theme.h"
 #include "widget.h"
@@ -9,7 +11,7 @@
 
 static void *dlopen(const char *name, int flags);
 static void dlclose(void *so);
-static void dlsym(void *so, const char *symbol);
+static void *dlsym(void *so, const char *symbol);
 #else
 #include <unistd.h>
 #include <dlfcn.h>
@@ -23,6 +25,12 @@ static void dlsym(void *so, const char *symbol);
 
 
 namespace goatkit {
+
+struct ThemeImpl {
+	void *so;
+	WidgetDrawFunc (*lookup_theme_draw_func)(const char*);
+	mutable std::map<std::string, WidgetDrawFunc> func_cache;
+};
 
 Theme *theme;
 static std::vector<std::string> search_paths;
@@ -47,12 +55,15 @@ void add_theme_path(const char *path)
 
 Theme::Theme()
 {
-	so = 0;
+	impl = new ThemeImpl;
+	impl->so = 0;
+	impl->lookup_theme_draw_func = 0;
 }
 
 Theme::~Theme()
 {
 	unload();
+	delete impl;
 }
 
 typedef WidgetDrawFunc (*LookupFunc)(const char*);
@@ -61,24 +72,25 @@ bool Theme::load(const char *name)
 {
 	unload();
 
-	if(!(so = dlopen(name, RTLD_LAZY))) {
+	std::string fname = std::string(name) + ".gtheme";
+	if(!(impl->so = dlopen(fname.c_str(), RTLD_LAZY))) {
 		for(size_t i=0; i<search_paths.size(); i++) {
-			std::string path = search_paths[i] + std::string(name);
+			std::string path = search_paths[i] + "/" + fname;
 
-			if((so = dlopen(path.c_str(), RTLD_LAZY))) {
+			if((impl->so = dlopen(path.c_str(), RTLD_LAZY))) {
 				break;
 			}
 		}
 
-		if(!so) {
+		if(!impl->so) {
 			fprintf(stderr, "%s: failed to load theme plugin: %s\n", __func__, name);
 			return false;
 		}
 	}
 
 	// loaded the shared object, now get the lookup function
-	lookup_theme_draw_func = (LookupFunc)dlsym(so, "get_widget_count");
-	if(!lookup_theme_draw_func) {
+	impl->lookup_theme_draw_func = (LookupFunc)dlsym(impl->so, "get_widget_func");
+	if(!impl->lookup_theme_draw_func) {
 		fprintf(stderr, "%s: invalid theme plugin %s\n", __func__, name);
 		unload();
 		return false;
@@ -89,21 +101,21 @@ bool Theme::load(const char *name)
 
 void Theme::unload()
 {
-	if(so) {
-		dlclose(so);
-		so = 0;
+	if(impl->so) {
+		dlclose(impl->so);
+		impl->so = 0;
 	}
-	func_cache.clear();
+	impl->func_cache.clear();
 }
 
 WidgetDrawFunc Theme::get_draw_func(const char *type) const
 {
-	std::map<std::string, WidgetDrawFunc>::const_iterator it = func_cache.find(type);
-	if(it == func_cache.end()) {
+	std::map<std::string, WidgetDrawFunc>::const_iterator it = impl->func_cache.find(type);
+	if(it == impl->func_cache.end()) {
 		// don't have it cached, try to look it up
 		WidgetDrawFunc func;
-		if(lookup_theme_draw_func && (func = lookup_theme_draw_func(type))) {
-			func_cache[type] = func;
+		if(impl->lookup_theme_draw_func && (func = impl->lookup_theme_draw_func(type))) {
+			impl->func_cache[type] = func;
 			return func;
 		}
 
@@ -185,11 +197,11 @@ static void *dlopen(const char *name, int flags)
 
 static void dlclose(void *so)
 {
-	// TODO
+	FreeLibrary(so);
 }
 
-static void dlsym(void *so, const char *symbol)
+static void *dlsym(void *so, const char *symbol)
 {
-	return GetProcAddress(so, symbol);
+	return (void*)GetProcAddress(so, symbol);
 }
 #endif

@@ -5,7 +5,7 @@
 
 namespace goatkit {
 
-class LabelImpl;
+struct LabelImpl;
 
 class Label : public Widget {
 private:

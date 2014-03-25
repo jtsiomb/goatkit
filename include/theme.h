@@ -1,22 +1,20 @@
 #ifndef THEME_H_
 #define THEME_H_
 
-#include <string>
-#include <map>
-#include "goatkit.h"
-
 namespace goatkit {
 
 class Widget;
 
+typedef void (*WidgetDrawFunc)(const Widget*);
+
 void add_theme_path(const char *path);
 void default_draw_func(const Widget *w);
 
+struct ThemeImpl;
+
 class Theme {
 private:
-	void *so;
-	WidgetDrawFunc (*lookup_theme_draw_func)(const char*);
-	mutable std::map<std::string, WidgetDrawFunc> func_cache;
+	ThemeImpl *impl;
 
 public:
 	Theme();

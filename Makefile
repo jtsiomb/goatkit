@@ -6,7 +6,14 @@ bin = test
 
 CFLAGS = -pedantic -Wall -g -Iinclude -Isrc
 CXXFLAGS = $(CFLAGS)
-LDFLAGS = -lGL -lGLU -lglut -lpthread -ldl
+LDFLAGS = $(libgl) -lpthread -ldl
+
+ifeq ($(shell uname -s), Darwin)
+	libgl = -framework OpenGL -framework GLUT
+	CFLAGS += -Wno-deprecated-declarations
+else
+	libgl = -lGL -lGLU -lglut
+endif
 
 $(bin): $(obj)
 	$(CXX) -o $@ $(obj) $(LDFLAGS)

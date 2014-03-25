@@ -2,7 +2,11 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <vector>
+#ifdef __APPLE__
+#include <GLUT/glut.h>
+#else
 #include <GL/glut.h>
+#endif
 #include "goatkit.h"
 
 static bool init();
@@ -53,6 +57,12 @@ static bool init()
 	button->set_position(350, 280);
 	button->set_size(100, 40);
 	widgets.push_back(button);
+
+	// load the theme
+	goatkit::add_theme_path("themes/simple");
+
+	goatkit::theme = new goatkit::Theme;
+	goatkit::theme->load("simple");
 
 	return true;
 }
