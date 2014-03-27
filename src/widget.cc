@@ -134,6 +134,9 @@ void Widget::mousein()
 void Widget::mouseout()
 {
 	widget->hover.change(false);
+	if(widget->press) {
+		widget->press.change(false);
+	}
 }
 
 float Widget::get_under_mouse() const

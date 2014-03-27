@@ -62,6 +62,8 @@ static void draw_button(const Widget *w)
 	}
 
 	float tor_rad = sz.x * 0.5 * vis;
+	float scale = LERP(1.0, 0.85, pressed);
+
 	float bcol_hoff[] = {0.6, 0.6, 0.6};
 	float bcol_hon[] = {0.8, 0.6, 0.4};
 	float bcol[] = {
@@ -82,11 +84,11 @@ static void draw_button(const Widget *w)
 	glRotatef(90, 1, 0, 0);
 
 	glColor3f(bcol[0], bcol[1], bcol[2]);
-	glutSolidTorus(sz.y / 2.0, tor_rad / 2.0, 18, 16);
+	glutSolidTorus(scale * sz.y / 2.0, scale * tor_rad / 2.0, 18, 16);
 
 	glScalef(1.0 - 0.1 / bnaspect, 1.0, 1.0 - 0.1);
 	glColor3f(0.3, 0.3, 0.3);
-	glutSolidTorus(sz.y / 2.0, tor_rad / 2.0, 18, 16);
+	glutSolidTorus(scale * sz.y / 2.0, scale * tor_rad / 2.0, 18, 16);
 
 	if(vis >= 1.0) {
 		glTranslatef(-calc_text_width(w->get_text()) / 2.0, 0, -5);
