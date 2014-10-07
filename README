@@ -1,0 +1,42 @@
+GoatKit - a widget toolkit for games
+------------------------------------
+
+1. Overview
+
+GoatKit is a widget toolkit library designed for creating user interface screens
+in OpenGL games.
+
+It's simple in the sense that it doesn't provide complex GUI hierarchies.
+Instead of windows, it's based on non-overlapping screens with widgets on them.
+However it's fully animatable, and themable, which are extremely important for
+making flashy UIs for the various game menu and options screens.
+
+Themable: the library itself doesn't do any drawing at all. Widget drawing is
+instead left to plugin themes (which are simple shared libraries/dlls), which
+can completely define the visuals and animations of any kind of widget. The
+intention is to have a different theme made for each game, that fits the game's
+particular visual style.
+
+Animatable: all typically boolean properties in regular toolkits, such as
+being visible, active, or hovered, are floating point values in the [0, 1]
+interval instead of being of type bool. This allows the theme to vary the visual
+properties such as blending, position, scale or whatever else based on these
+values. So widgets can expand into visibility, slowly glow while being hovered
+over, or whatever else the particular theme needs.
+
+2. License
+
+Copyright (C) 2014  John Tsiombikas <nuclear@member.fsf.org>
+You may use, modify, and redistribute GoatKit, with or without modifications,
+under the terms of the GNU Lesser General Public License (LGPL) version 3, or
+(at your option) any later version published by the Free Software Foundation.
+See COPYING and COPYING.LESSER for more details.
+
+3. Download
+
+project page and main mercurial (hg) repo: http://code.google.com/p/goatkit
+github mirror: http://github.com/jtsiomb/goatkit
+
+4. Contact
+
+Feel free to send feedback to nuclear@member.fsf.org
