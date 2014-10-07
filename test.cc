@@ -53,13 +53,21 @@ int main(int argc, char **argv)
 
 static bool init()
 {
+	scr.hide();
+
+	goatkit::Label *label = new goatkit::Label;
+	label->set_position(300, 200);
+	label->set_size(200, 60);
+	label->set_text("a label!");
+	scr.add_widget(label);
+
 	goatkit::Button *button = new goatkit::Button;
 	button->set_position(300, 270);
 	button->set_size(200, 60);
 	button->set_text("a button!");
-	button->hide();
-	button->show();
 	scr.add_widget(button);
+
+	scr.show();
 
 	// load the theme
 	goatkit::add_theme_path("themes/simple");
