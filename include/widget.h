@@ -10,7 +10,10 @@ struct BBox {
 	Vec2 bmin, bmax;
 };
 
+class Widget;
 struct WidgetImpl;
+
+typedef void (*EventCallback)(Widget*, const Event &ev, void *cls);
 
 class Widget {
 private:
@@ -77,6 +80,9 @@ public:
 
 	// event dispatcher
 	virtual void handle_event(const Event &ev);
+
+	// external callback setting
+	virtual void set_callback(EventType evtype, EventCallback func, void *cls = 0);
 };
 
 }

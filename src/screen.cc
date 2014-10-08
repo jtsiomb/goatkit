@@ -131,6 +131,10 @@ void Screen::hide()
 	}
 }
 
+bool Screen::is_visible() const
+{
+	return scr->visible;
+}
 
 void Screen::draw() const
 {

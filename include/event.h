@@ -6,10 +6,18 @@
 namespace goatkit {
 
 enum EventType {
+	// primary events
 	EV_MOUSE_BUTTON,
 	EV_MOUSE_MOTION,
 	EV_MOUSE_FOCUS,
-	EV_KEY
+	EV_KEY,
+
+	// derived events
+	EV_CLICK,
+	EV_DOUBLE_CLICK,
+	EV_CHANGE,
+
+	NUM_EVENTS
 };
 
 struct ButtonEvent {

@@ -31,6 +31,7 @@ public:
 
 	virtual void show();
 	virtual void hide();
+	virtual bool is_visible() const;
 
 	virtual void draw() const;
 

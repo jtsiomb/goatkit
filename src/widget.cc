@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include <math.h>
 #include <string>
 #include <sstream>
@@ -13,6 +14,11 @@ struct WidgetImpl {
 	BBox box;
 
 	BoolAnim visible, active, press, hover;
+
+	struct {
+		EventCallback func;
+		void *cls;
+	} cb[NUM_EVENTS];
 };
 
 
@@ -34,6 +40,8 @@ Widget::Widget()
 
 	widget->hover.set_transition_duration(250);
 	widget->press.set_transition_duration(50);
+
+	memset(widget->cb, 0, sizeof widget->cb);
 }
 
 Widget::~Widget()
@@ -238,6 +246,20 @@ void Widget::on_change()
 }
 
 
+#define CALL_CB(w, ev) \
+	do { \
+		if((w)->widget->cb[ev.type].func) { \
+			(w)->widget->cb[ev.type].func((w), ev, (w)->widget->cb[ev.type].cls); \
+		} \
+	} while(0)
+
+#define CALL_CB_TYPE(w, t) \
+	do { \
+		Event ev; \
+		ev.type = (t); \
+		CALL_CB(w, ev); \
+	} while(0)
+
 /* the event dispatcher generates high-level events (click, etc)
  * and calls the on_whatever() functions for both low and high-level
  * events.
@@ -254,10 +276,12 @@ void Widget::handle_event(const Event &ev)
 			press();
 		} else {
 			if(is_pressed()) {
+				CALL_CB_TYPE(this, EV_CLICK);
 				on_click();
 			}
 			release();
 		}
+
 		on_mouse_button(ev.button);
 		break;
 
@@ -280,7 +304,17 @@ void Widget::handle_event(const Event &ev)
 
 	default:
 		fprintf(stderr, "%s: unknown event id: %d\n", __func__, ev.type);
+		return;
 	}
+
+	CALL_CB(this, ev);
+}
+
+
+void Widget::set_callback(EventType evtype, EventCallback func, void *cls)
+{
+	widget->cb[evtype].func = func;
+	widget->cb[evtype].cls = cls;
 }
 
 

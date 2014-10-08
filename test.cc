@@ -113,6 +113,14 @@ static void keypress(unsigned char key, int x, int y)
 	switch(key) {
 	case 27:
 		exit(0);
+
+	case '`':
+		if(scr.is_visible()) {
+			scr.hide();
+		} else {
+			scr.show();
+		}
+		break;
 	}
 
 	scr.sysev_keyboard(key, true);
