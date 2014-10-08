@@ -5,6 +5,7 @@
 #include "widget.h"
 #include "button.h"
 #include "label.h"
+#include "slider.h"
 #include "event.h"
 #include "theme.h"
 

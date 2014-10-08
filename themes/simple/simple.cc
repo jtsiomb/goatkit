@@ -16,8 +16,10 @@ typedef void (*DrawFunc)(const Widget*);
 
 static void draw_button(const Widget *w);
 static void draw_label(const Widget *w);
+static void draw_slider(const Widget *w);
 static float calc_text_width(const char *text);
 static void draw_text(float x, float y, const char *text);
+static void draw_rect(float x, float y, float xsz, float ysz, float fg[4], float bg[4]);
 
 static struct {
 	const char *name;
@@ -25,6 +27,7 @@ static struct {
 } widget_funcs[] = {
 	{ "button", draw_button },
 	{ "label", draw_label },
+	{ "slider", draw_slider },
 	{ 0, 0 }
 };
 
@@ -32,8 +35,8 @@ static bool initialized;
 static std::map<std::string, DrawFunc> funcmap;
 
 /* theme colors */
-static float fgcol[] = {0.6, 0.6, 0.6, 1.0};
-static float fgcol_off[] = {0.8, 0.6, 0.4, 1.0};
+static float fgcol[] = {0.8, 0.6, 0.4, 1.0};
+static float fgcol_off[] = {0.6, 0.6, 0.6, 1.0};
 static float bgcol[] = {0.3, 0.3, 0.3, 1.0};
 
 extern "C" goatkit::WidgetDrawFunc get_widget_func(const char *name)
@@ -133,8 +136,44 @@ static void draw_label(const Widget *w)
 	begin_drawing(w);
 
 	glTranslatef((sz.x - calc_text_width(w->get_text())) / 2.0, sz.y / 2.0, 0);
-	glColor4f(fgcol[0], fgcol[1], fgcol[2], vis);
+	glColor4f(fgcol_off[0], fgcol_off[1], fgcol_off[2], vis);
 	draw_text(0, 0, w->get_text());
+
+	end_drawing(w);
+}
+
+static void draw_slider(const Widget *w)
+{
+	Vec2 pos = w->get_position();
+	Vec2 sz = w->get_size();
+	float vis = w->get_visibility();
+	float hover = w->get_under_mouse();
+	float handle_width = 3;
+
+	if(vis < VIS_THRES) {
+		return;
+	}
+
+
+	Slider *slider = (Slider*)w;
+	float value = slider->get_value();
+	char valtext[16];
+	sprintf(valtext, "%g", value);
+
+	float x = sz.x * value;
+
+	float fg[4] = {0, 0, 0, vis};
+	for(int i=0; i<3; i++) {
+		fg[i] = LERP(fgcol_off[i], fgcol[i], hover);
+	}
+
+	float act_height = sz.y / 2.0;
+
+	begin_drawing(w);
+
+	draw_rect(0, sz.y - act_height + act_height / 3, sz.x, act_height / 3, fg, bgcol);
+	draw_rect(x - handle_width / 2.0, sz.y - act_height, handle_width, act_height, fg, bgcol);
+	draw_text(x - calc_text_width(valtext) / 2.0, act_height / 2.0, valtext);
 
 	end_drawing(w);
 }
@@ -156,4 +195,23 @@ static void draw_text(float x, float y, const char *text)
 	while(*text) {
 		glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, *text++);
 	}
+}
+
+static void draw_rect(float x, float y, float xsz, float ysz, float fg[4], float bg[4])
+{
+	glBegin(GL_QUADS);
+	glColor4fv(bg);
+	glVertex2f(x, y);
+	glVertex2f(x + xsz, y);
+	glVertex2f(x + xsz, y + ysz);
+	glVertex2f(x, y + ysz);
+	glEnd();
+
+	glBegin(GL_LINE_LOOP);
+	glColor4fv(fg);
+	glVertex2f(x, y);
+	glVertex2f(x + xsz, y);
+	glVertex2f(x + xsz, y + ysz);
+	glVertex2f(x, y + ysz);
+	glEnd();
 }

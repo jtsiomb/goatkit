@@ -303,7 +303,6 @@ void Widget::handle_event(const Event &ev)
 		break;
 
 	default:
-		fprintf(stderr, "%s: unknown event id: %d\n", __func__, ev.type);
 		return;
 	}
 

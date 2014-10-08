@@ -174,6 +174,7 @@ void Screen::sysev_mouse_button(int bn, bool press, float x, float y)
 	Widget *new_over = find_widget_at(scr, pt);
 
 	ev.type = EV_MOUSE_BUTTON;
+	ev.button.button = bn;
 	ev.button.pos = pt;
 	ev.button.press = press;
 

@@ -69,6 +69,13 @@ static bool init()
 	button->set_callback(goatkit::EV_CLICK, callback);
 	scr.add_widget(button);
 
+	goatkit::Slider *slider = new goatkit::Slider;
+	slider->set_position(300, 350);
+	slider->set_size(200, 60);
+	slider->set_text("a slider!");
+	slider->set_callback(goatkit::EV_CHANGE, callback);
+	scr.add_widget(slider);
+
 	scr.show();
 
 	// load the theme
@@ -158,5 +165,5 @@ static void motion(int x, int y)
 
 static void callback(goatkit::Widget *w, const goatkit::Event &ev, void *cls)
 {
-	printf("%s callback for %s widget %p called\n", event_type_name(ev.type), w->get_type_name(), w);
+	printf("%s callback for %s widget %p called\n", event_type_name(ev.type), w->get_type_name(), (void*)w);
 }
