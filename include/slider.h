@@ -20,6 +20,9 @@ public:
 	virtual void set_value(float val);
 	virtual float get_value() const;
 
+	virtual void set_continuous_change(bool cont);
+	virtual bool get_continuous_change() const;
+
 	virtual void on_mouse_button(const ButtonEvent &ev);
 	virtual void on_mouse_motion(const MotionEvent &ev);
 };

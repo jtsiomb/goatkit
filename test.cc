@@ -74,6 +74,7 @@ static bool init()
 	slider->set_size(200, 60);
 	slider->set_text("a slider!");
 	slider->set_callback(goatkit::EV_CHANGE, callback);
+	slider->set_continuous_change(false);
 	scr.add_widget(slider);
 
 	scr.show();

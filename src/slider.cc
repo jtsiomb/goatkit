@@ -4,15 +4,17 @@
 namespace goatkit {
 
 struct SliderImpl {
-	float value;
+	float value, prev_value;
 	bool dragging;
+	bool cont_change;
 };
 
 Slider::Slider()
 {
 	slider = new SliderImpl;
-	slider->value = 0.0f;
+	slider->value = slider->prev_value = 0.0f;
 	slider->dragging = false;
+	slider->cont_change = true;
 }
 
 Slider::~Slider()
@@ -35,10 +37,29 @@ float Slider::get_value() const
 	return slider->value;
 }
 
+void Slider::set_continuous_change(bool cont)
+{
+	slider->cont_change = cont;
+}
+
+bool Slider::get_continuous_change() const
+{
+	return slider->cont_change;
+}
+
 void Slider::on_mouse_button(const ButtonEvent &ev)
 {
 	if(ev.button == 0) {
 		slider->dragging = ev.press;
+		if(!ev.press) {
+			// on release, if the value has changed send the appropriate event
+			if(slider->prev_value != slider->value) {
+				Event ev;
+				ev.type = EV_CHANGE;
+				handle_event(ev);
+				slider->prev_value = slider->value;
+			}
+		}
 	}
 }
 
@@ -52,10 +73,12 @@ void Slider::on_mouse_motion(const MotionEvent &ev)
 
 	float new_val = (ev.pos.x - box.bmin.x) / (box.bmax.x - box.bmin.x);
 	if(new_val != slider->value) {
-		Event cev;
-		cev.type = EV_CHANGE;
-		handle_event(cev);
 		slider->value = new_val;
+		if(slider->cont_change) {
+			Event cev;
+			cev.type = EV_CHANGE;
+			handle_event(cev);
+		}
 	}
 }
 

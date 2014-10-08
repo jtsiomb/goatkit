@@ -302,8 +302,12 @@ void Widget::handle_event(const Event &ev)
 		on_key(ev.key);
 		break;
 
+	case EV_CHANGE:
+		on_change();
+		break;
+
 	default:
-		return;
+		break;
 	}
 
 	CALL_CB(this, ev);
