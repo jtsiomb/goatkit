@@ -20,6 +20,7 @@ static void skeypress(int key, int x, int y);
 static void skeyrelease(int key, int x, int y);
 static void mouse(int bn, int st, int x, int y);
 static void motion(int x, int y);
+static void callback(goatkit::Widget *w, const goatkit::Event &ev, void *cls);
 
 static goatkit::Screen scr;
 
@@ -65,6 +66,7 @@ static bool init()
 	button->set_position(300, 270);
 	button->set_size(200, 60);
 	button->set_text("a button!");
+	button->set_callback(goatkit::EV_CLICK, callback);
 	scr.add_widget(button);
 
 	scr.show();
@@ -152,4 +154,9 @@ static void mouse(int bn, int st, int x, int y)
 static void motion(int x, int y)
 {
 	scr.sysev_mouse_motion(x, y);
+}
+
+static void callback(goatkit::Widget *w, const goatkit::Event &ev, void *cls)
+{
+	printf("%s callback for %s widget %p called\n", event_type_name(ev.type), w->get_type_name(), w);
 }

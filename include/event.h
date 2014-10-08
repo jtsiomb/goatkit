@@ -48,6 +48,8 @@ struct Event {
 	KeyEvent key;
 };
 
+const char *event_type_name(EventType type);
+
 }	// namespace goatkit
 
 #endif	// EVENT_H_
