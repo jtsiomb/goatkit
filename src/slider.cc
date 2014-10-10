@@ -22,9 +22,14 @@ namespace goatkit {
 
 struct SliderImpl {
 	float value, prev_value;
+	float range_min, range_max;
+	float padding;
+	float granularity;
 	bool dragging;
 	bool cont_change;
 };
+
+static float remap(float val, float inlow, float inhigh, float outlow, float outhigh);
 
 Slider::Slider()
 {
@@ -32,6 +37,12 @@ Slider::Slider()
 	slider->value = slider->prev_value = 0.0f;
 	slider->dragging = false;
 	slider->cont_change = true;
+
+	slider->range_min = 0.0;
+	slider->range_max = 1.0;
+	slider->granularity = 0.0;
+
+	slider->padding = -1.0;
 }
 
 Slider::~Slider()
@@ -46,12 +57,36 @@ const char *Slider::get_type_name() const
 
 void Slider::set_value(float val)
 {
-	slider->value = val;
+	slider->value = remap(val, slider->range_min, slider->range_max, 0, 1);
 }
 
 float Slider::get_value() const
 {
+	return remap(slider->value, 0, 1, slider->range_min, slider->range_max);
+}
+
+void Slider::set_value_norm(float val)
+{
+	slider->value = val < 0.0 ? 0.0 : (val > 1.0 ? 1.0 : val);
+}
+
+float Slider::get_value_norm() const
+{
 	return slider->value;
+}
+
+void Slider::set_padding(float pad)
+{
+	slider->padding = pad;
+}
+
+float Slider::get_padding() const
+{
+	if(slider->padding < 0.0) {
+		BBox box = get_box();
+		return (box.bmax.y - box.bmin.y) * 0.25;
+	}
+	return slider->padding;
 }
 
 void Slider::set_continuous_change(bool cont)
@@ -62,6 +97,22 @@ void Slider::set_continuous_change(bool cont)
 bool Slider::get_continuous_change() const
 {
 	return slider->cont_change;
+}
+
+void Slider::set_range(float min, float max)
+{
+	slider->range_min = min;
+	slider->range_max = max;
+}
+
+float Slider::get_range_min() const
+{
+	return slider->range_min;
+}
+
+float Slider::get_range_max() const
+{
+	return slider->range_max;
 }
 
 void Slider::on_mouse_button(const ButtonEvent &ev)
@@ -88,7 +139,14 @@ void Slider::on_mouse_motion(const MotionEvent &ev)
 
 	BBox box = get_box();
 
-	float new_val = (ev.pos.x - box.bmin.x) / (box.bmax.x - box.bmin.x);
+	float padding = get_padding();
+	float start = box.bmin.x + padding;
+	float end = box.bmax.x - padding;
+	float new_val = (ev.pos.x - start) / (end - start);
+
+	if(new_val < 0.0) new_val = 0.0;
+	if(new_val > 1.0) new_val = 1.0;
+
 	if(new_val != slider->value) {
 		slider->value = new_val;
 		if(slider->cont_change) {
@@ -97,6 +155,14 @@ void Slider::on_mouse_motion(const MotionEvent &ev)
 			handle_event(cev);
 		}
 	}
+}
+
+static float remap(float val, float inlow, float inhigh, float outlow, float outhigh)
+{
+	float t = (val - inlow) / (inhigh - inlow);
+	if(t < 0.0) t = 0.0;
+	if(t > 1.0) t = 1.0;
+	return t * (outhigh - outlow) + outlow;
 }
 
 }	// namespace goatkit

@@ -148,7 +148,6 @@ static void draw_slider(const Widget *w)
 	Vec2 sz = w->get_size();
 	float vis = w->get_visibility();
 	float hover = w->get_under_mouse();
-	float handle_width = 3;
 
 	if(vis < VIS_THRES) {
 		return;
@@ -156,11 +155,14 @@ static void draw_slider(const Widget *w)
 
 
 	Slider *slider = (Slider*)w;
+	float pad = slider->get_padding();
+	float handle_width = pad * 2.0;
+
 	float value = slider->get_value();
 	char valtext[16];
 	sprintf(valtext, "%g", value);
 
-	float x = sz.x * value;
+	float x = pad + (sz.x - 2.0 * pad) * slider->get_value_norm();
 
 	float fg[4] = {0, 0, 0, vis};
 	for(int i=0; i<3; i++) {

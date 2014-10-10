@@ -37,8 +37,18 @@ public:
 	virtual void set_value(float val);
 	virtual float get_value() const;
 
+	virtual void set_value_norm(float val);
+	virtual float get_value_norm() const;
+
+	virtual void set_padding(float pad);
+	virtual float get_padding() const;
+
 	virtual void set_continuous_change(bool cont);
 	virtual bool get_continuous_change() const;
+
+	virtual void set_range(float min, float max);
+	virtual float get_range_min() const;
+	virtual float get_range_max() const;
 
 	virtual void on_mouse_button(const ButtonEvent &ev);
 	virtual void on_mouse_motion(const MotionEvent &ev);
