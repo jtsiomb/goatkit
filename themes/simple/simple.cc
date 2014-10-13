@@ -272,9 +272,11 @@ static void draw_text(float x, float y, const char *text)
 	}
 }
 
+#define DISP(s, t)		LERP((s) * 2.0, 0, (t))
 static void draw_rect(const Widget *w, float x, float y, float xsz, float ysz)
 {
 	float fg[4], bg[4];
+	float vis = w->get_visibility();
 
 	get_fgcolor(w, fg);
 	get_bgcolor(w, bg);
@@ -287,12 +289,25 @@ static void draw_rect(const Widget *w, float x, float y, float xsz, float ysz)
 	glVertex2f(x, y + ysz);
 	glEnd();
 
-	glBegin(GL_LINE_LOOP);
+	glBegin(GL_LINES);
 	glColor4fv(fg);
-	glVertex2f(x, y);
-	glVertex2f(x + xsz, y);
-	glVertex2f(x + xsz, y + ysz);
-	glVertex2f(x, y + ysz);
+
+	// top
+	glVertex2f(x - DISP(xsz, vis), y);
+	glVertex2f(x + xsz - DISP(xsz, vis), y);
+
+	// right
+	glVertex2f(x + xsz, y - DISP(ysz, vis));
+	glVertex2f(x + xsz, y + ysz - DISP(ysz, vis));
+
+	// bottom
+	glVertex2f(x + xsz + DISP(xsz, vis), y + ysz);
+	glVertex2f(x + DISP(xsz, vis), y + ysz);
+
+	// left
+	glVertex2f(x, y + ysz + DISP(ysz, vis));
+	glVertex2f(x, y + DISP(ysz, vis));
+
 	glEnd();
 }
 
