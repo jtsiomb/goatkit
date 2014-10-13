@@ -59,29 +59,30 @@ static bool init()
 	scr.hide();
 
 	float ypos = 0;
+	float vsep = 80;
 
 	goatkit::Label *label = new goatkit::Label;
-	label->set_position(300, ypos += 64);
+	label->set_position(300, ypos += vsep);
 	label->set_size(200, 40);
 	label->set_text("a label!");
 	scr.add_widget(label);
 
 	goatkit::Button *button = new goatkit::Button;
-	button->set_position(300, ypos += 64);
+	button->set_position(300, ypos += vsep);
 	button->set_size(200, 40);
 	button->set_text("a button!");
 	button->set_callback(goatkit::EV_CLICK, callback);
 	scr.add_widget(button);
 
 	goatkit::CheckBox *cbox = new goatkit::CheckBox;
-	cbox->set_position(300, ypos += 64);
-	cbox->set_size(200, 40);
+	cbox->set_position(300, ypos += vsep);
+	cbox->set_size(200, 20);
 	cbox->set_text("a checkbox!");
 	cbox->set_callback(goatkit::EV_CHANGE, callback);
 	scr.add_widget(cbox);
 
 	goatkit::Slider *slider = new goatkit::Slider;
-	slider->set_position(300, ypos += 64);
+	slider->set_position(300, ypos += vsep);
 	slider->set_size(200, 40);
 	slider->set_callback(goatkit::EV_CHANGE, callback);
 	slider->set_continuous_change(false);
@@ -89,7 +90,7 @@ static bool init()
 	scr.add_widget(slider);
 
 	goatkit::Slider *intslider = new goatkit::Slider;
-	intslider->set_position(300, ypos += 64);
+	intslider->set_position(300, ypos += vsep);
 	intslider->set_size(200, 40);
 	intslider->set_callback(goatkit::EV_CHANGE, callback);
 	intslider->set_continuous_change(false);

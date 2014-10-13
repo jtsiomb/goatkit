@@ -131,7 +131,39 @@ static void draw_button(const Widget *w)
 
 static void draw_checkbox(const Widget *w)
 {
+	Vec2 sz = w->get_size();
+	float vis = w->get_visibility();
+
+	if(vis < VIS_THRES) {
+		return;
+	}
+
+	float fg[4];
+	get_fgcolor(w, fg);
+
+	goatkit::CheckBox *cbox = (goatkit::CheckBox*)w;
+
 	begin_drawing(w);
+
+	draw_rect(w, 0, 0, sz.y, sz.y);
+
+	if(cbox->get_checked()) {
+		glBegin(GL_TRIANGLES);
+		glColor4fv(fg);
+		glVertex2f(0, sz.y / 2 - 2);
+		glVertex2f(sz.y / 2, sz.y - 2);
+		glVertex2f(sz.y / 2, sz.y - sz.y / 4 - 2);
+
+		glVertex2f(sz.y / 2, sz.y - 2);
+		glVertex2f(sz.y, 0);
+		glVertex2f(sz.y / 2, sz.y - sz.y / 4 - 2);
+		glEnd();
+	}
+
+	glTranslatef(sz.y * 1.5, sz.y / 2.0 + 5, 0);
+	glColor4fv(fg);
+	draw_text(0, 0, w->get_text());
+
 	end_drawing(w);
 }
 
