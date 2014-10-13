@@ -75,7 +75,7 @@ static bool init()
 
 	goatkit::CheckBox *cbox = new goatkit::CheckBox;
 	cbox->set_position(300, ypos += 64);
-	cbox->set_size(200, 40);
+	cbox->set_size(200, 20);
 	cbox->set_text("a checkbox!");
 	cbox->set_callback(goatkit::EV_CHANGE, callback);
 	scr.add_widget(cbox);
