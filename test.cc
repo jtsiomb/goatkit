@@ -28,7 +28,7 @@ int main(int argc, char **argv)
 {
 	glutInitWindowSize(800, 600);
 	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
+	glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE | GLUT_MULTISAMPLE);
 	glutCreateWindow("goatkit test");
 
 	glutDisplayFunc(disp);
@@ -54,28 +54,48 @@ int main(int argc, char **argv)
 
 static bool init()
 {
+	glEnable(GL_MULTISAMPLE);
+
 	scr.hide();
 
+	float ypos = 0;
+
 	goatkit::Label *label = new goatkit::Label;
-	label->set_position(300, 200);
-	label->set_size(200, 60);
+	label->set_position(300, ypos += 64);
+	label->set_size(200, 40);
 	label->set_text("a label!");
 	scr.add_widget(label);
 
 	goatkit::Button *button = new goatkit::Button;
-	button->set_position(300, 270);
-	button->set_size(200, 60);
+	button->set_position(300, ypos += 64);
+	button->set_size(200, 40);
 	button->set_text("a button!");
 	button->set_callback(goatkit::EV_CLICK, callback);
 	scr.add_widget(button);
 
+	goatkit::CheckBox *cbox = new goatkit::CheckBox;
+	cbox->set_position(300, ypos += 64);
+	cbox->set_size(200, 40);
+	cbox->set_text("a checkbox!");
+	cbox->set_callback(goatkit::EV_CHANGE, callback);
+	scr.add_widget(cbox);
+
 	goatkit::Slider *slider = new goatkit::Slider;
-	slider->set_position(300, 350);
-	slider->set_size(200, 60);
+	slider->set_position(300, ypos += 64);
+	slider->set_size(200, 40);
 	slider->set_callback(goatkit::EV_CHANGE, callback);
 	slider->set_continuous_change(false);
 	slider->set_range(0, 100.0);
 	scr.add_widget(slider);
+
+	goatkit::Slider *intslider = new goatkit::Slider;
+	intslider->set_position(300, ypos += 64);
+	intslider->set_size(200, 40);
+	intslider->set_callback(goatkit::EV_CHANGE, callback);
+	intslider->set_continuous_change(false);
+	intslider->set_range(0, 100.0);
+	intslider->set_step(10);
+	scr.add_widget(intslider);
 
 	scr.show();
 

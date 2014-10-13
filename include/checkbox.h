@@ -15,16 +15,35 @@ GNU Lesser General Public License for more details.
 You should have received a copy of the GNU Lesser General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef GOATKIT_H_
-#define GOATKIT_H_
+#ifndef CHECKBOX_H_
+#define CHECKBOX_H_
 
-#include "screen.h"
 #include "widget.h"
-#include "button.h"
-#include "checkbox.h"
-#include "label.h"
-#include "slider.h"
-#include "event.h"
-#include "theme.h"
 
-#endif	// GOATKIT_H_
+namespace goatkit {
+
+struct CheckBoxImpl;
+
+class CheckBox : public Widget {
+private:
+	CheckBoxImpl *cbox;
+
+public:
+	CheckBox();
+	virtual ~CheckBox();
+
+	virtual const char *get_type_name() const;
+
+	virtual void set_checked(bool ck);
+	virtual bool get_checked() const;
+
+	virtual void toggle();
+	virtual void check();
+	virtual void uncheck();
+
+	virtual void on_click();
+};
+
+}	// namespace goatkit
+
+#endif	// CHECKBOX_H_

@@ -15,6 +15,7 @@ using namespace goatkit;
 typedef void (*DrawFunc)(const Widget*);
 
 static void draw_button(const Widget *w);
+static void draw_checkbox(const Widget *w);
 static void draw_label(const Widget *w);
 static void draw_slider(const Widget *w);
 static float calc_text_width(const char *text);
@@ -26,6 +27,7 @@ static struct {
 	DrawFunc func;
 } widget_funcs[] = {
 	{ "button", draw_button },
+	{ "checkbox", draw_checkbox },
 	{ "label", draw_label },
 	{ "slider", draw_slider },
 	{ 0, 0 }
@@ -124,6 +126,12 @@ static void draw_button(const Widget *w)
 	end_drawing(w);
 }
 
+static void draw_checkbox(const Widget *w)
+{
+	begin_drawing(w);
+	end_drawing(w);
+}
+
 static void draw_label(const Widget *w)
 {
 	Vec2 sz = w->get_size();
@@ -144,7 +152,6 @@ static void draw_label(const Widget *w)
 
 static void draw_slider(const Widget *w)
 {
-	Vec2 pos = w->get_position();
 	Vec2 sz = w->get_size();
 	float vis = w->get_visibility();
 	float hover = w->get_under_mouse();
@@ -162,7 +169,8 @@ static void draw_slider(const Widget *w)
 	char valtext[16];
 	sprintf(valtext, "%g", value);
 
-	float x = pad + (sz.x - 2.0 * pad) * slider->get_value_norm();
+	float trough_sz = sz.x - 2.0 * pad;
+	float x = pad + trough_sz * slider->get_value_norm();
 
 	float fg[4] = {0, 0, 0, vis};
 	for(int i=0; i<3; i++) {
@@ -172,6 +180,26 @@ static void draw_slider(const Widget *w)
 	float act_height = sz.y / 2.0;
 
 	begin_drawing(w);
+
+	float step = slider->get_step();
+	if(step > 0.0) {
+		float beg = slider->get_range_min();
+		float end = slider->get_range_max();
+		int num_seg = (end - beg) / step;
+		int num_ticks = num_seg + 1;
+		float x = pad;
+		float dx = trough_sz / num_seg;
+
+		glLineWidth(1.0);
+		glBegin(GL_LINES);
+		glColor4fv(fg);
+		for(int i=0; i<num_ticks; i++) {
+			glVertex2f(x, sz.y / 3.0);
+			glVertex2f(x, sz.y / 2.0);
+			x += dx;
+		}
+		glEnd();
+	}
 
 	draw_rect(0, sz.y - act_height + act_height / 3, sz.x, act_height / 3, fg, bgcol);
 	draw_rect(x - handle_width / 2.0, sz.y - act_height, handle_width, act_height, fg, bgcol);

@@ -16,6 +16,7 @@ You should have received a copy of the GNU Lesser General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include <stdio.h>
+#include <math.h>
 #include "slider.h"
 
 namespace goatkit {
@@ -141,6 +142,8 @@ void Slider::on_mouse_button(const ButtonEvent &ev)
 	}
 }
 
+#define ROUND(x)	floor((x) + 0.5)
+
 void Slider::on_mouse_motion(const MotionEvent &ev)
 {
 	if(!slider->dragging) {
@@ -154,16 +157,16 @@ void Slider::on_mouse_motion(const MotionEvent &ev)
 	float end = box.bmax.x - padding;
 	float new_val = (ev.pos.x - start) / (end - start);
 
-	if(new_val < 0.0) new_val = 0.0;
-	if(new_val > 1.0) new_val = 1.0;
-
 	// if we have a non-zero step, snap to the nearest value
 	if(slider->step > 0.0) {
 		float range = slider->range_max - slider->range_min;
-		float dx = slider->step / range;
+		float st = slider->step / range;
 
-
+		new_val = ROUND(new_val / st) * st;
 	}
+
+	if(new_val < 0.0) new_val = 0.0;
+	if(new_val > 1.0) new_val = 1.0;
 
 	if(new_val != slider->value) {
 		slider->value = new_val;
