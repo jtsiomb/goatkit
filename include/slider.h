@@ -50,6 +50,9 @@ public:
 	virtual float get_range_min() const;
 	virtual float get_range_max() const;
 
+	virtual void set_step(float step);
+	virtual float get_step() const;
+
 	virtual void on_mouse_button(const ButtonEvent &ev);
 	virtual void on_mouse_motion(const MotionEvent &ev);
 };

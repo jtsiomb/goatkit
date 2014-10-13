@@ -24,7 +24,7 @@ struct SliderImpl {
 	float value, prev_value;
 	float range_min, range_max;
 	float padding;
-	float granularity;
+	float step;
 	bool dragging;
 	bool cont_change;
 };
@@ -40,7 +40,7 @@ Slider::Slider()
 
 	slider->range_min = 0.0;
 	slider->range_max = 1.0;
-	slider->granularity = 0.0;
+	slider->step = 0.0;
 
 	slider->padding = -1.0;
 }
@@ -115,6 +115,16 @@ float Slider::get_range_max() const
 	return slider->range_max;
 }
 
+void Slider::set_step(float step)
+{
+	slider->step = step;
+}
+
+float Slider::get_step() const
+{
+	return slider->step;
+}
+
 void Slider::on_mouse_button(const ButtonEvent &ev)
 {
 	if(ev.button == 0) {
@@ -146,6 +156,14 @@ void Slider::on_mouse_motion(const MotionEvent &ev)
 
 	if(new_val < 0.0) new_val = 0.0;
 	if(new_val > 1.0) new_val = 1.0;
+
+	// if we have a non-zero step, snap to the nearest value
+	if(slider->step > 0.0) {
+		float range = slider->range_max - slider->range_min;
+		float dx = slider->step / range;
+
+
+	}
 
 	if(new_val != slider->value) {
 		slider->value = new_val;
