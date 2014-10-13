@@ -147,16 +147,26 @@ static void draw_checkbox(const Widget *w)
 
 	draw_rect(w, 0, 0, sz.y, sz.y);
 
-	if(cbox->get_checked()) {
+	float state = cbox->get_checked();
+
+	float bottom[2] = {sz.y / 2, sz.y - 1};
+	float left[2] = {-2, sz.y / 4};
+	float right[2] = {sz.y, -4};
+
+	if(state > 0.0) {
+		// draw tickmark
 		glBegin(GL_TRIANGLES);
 		glColor4fv(fg);
-		glVertex2f(0, sz.y / 2 - 2);
-		glVertex2f(sz.y / 2, sz.y - 2);
-		glVertex2f(sz.y / 2, sz.y - sz.y / 4 - 2);
+		float t = state * 2.0 > 1.0 ? 1.0 : state * 2.0;
+		glVertex2f(left[0], left[1]);
+		glVertex2f(LERP(left[0], bottom[0], t), LERP(left[1], bottom[1], t));
+		glVertex2f(LERP(left[0], bottom[0], t), LERP(left[1], bottom[1] - sz.y / 3, t));
 
-		glVertex2f(sz.y / 2, sz.y - 2);
-		glVertex2f(sz.y, 0);
-		glVertex2f(sz.y / 2, sz.y - sz.y / 4 - 2);
+		if((t = state * 2.0 - 1.0) > 0.0) {
+			glVertex2f(bottom[0], bottom[1]);
+			glVertex2f(LERP(bottom[0], right[0], t), LERP(bottom[1], right[1], t));
+			glVertex2f(bottom[0], bottom[1] - sz.y / 3);
+		}
 		glEnd();
 	}
 

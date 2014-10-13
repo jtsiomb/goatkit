@@ -34,12 +34,11 @@ public:
 
 	virtual const char *get_type_name() const;
 
-	virtual void set_checked(bool ck);
-	virtual bool get_checked() const;
-
-	virtual void toggle();
 	virtual void check();
 	virtual void uncheck();
+	virtual float get_checked() const;
+	virtual bool is_checked() const;
+	virtual void toggle();
 
 	virtual void on_click();
 };
