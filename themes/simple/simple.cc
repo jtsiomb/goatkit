@@ -20,7 +20,10 @@ static void draw_label(const Widget *w);
 static void draw_slider(const Widget *w);
 static float calc_text_width(const char *text);
 static void draw_text(float x, float y, const char *text);
-static void draw_rect(float x, float y, float xsz, float ysz, float fg[4], float bg[4]);
+static void draw_rect(const Widget *w, float x, float y, float xsz, float ysz);
+
+static void get_fgcolor(const Widget *w, float *col);
+static void get_bgcolor(const Widget *w, float *col);
 
 static struct {
 	const char *name;
@@ -38,8 +41,12 @@ static std::map<std::string, DrawFunc> funcmap;
 
 /* theme colors */
 static float fgcol[] = {0.8, 0.6, 0.4, 1.0};
-static float fgcol_off[] = {0.6, 0.6, 0.6, 1.0};
+static float fgcol_off[] = {0.65, 0.65, 0.6, 1.0};
+static float fgcol_inact[] = {0.4, 0.4, 0.4, 1.0};
 static float bgcol[] = {0.3, 0.3, 0.3, 1.0};
+static float bgcol_off[] = {0.3, 0.3, 0.3, 1.0};
+static float bgcol_inact[] = {0.3, 0.3, 0.3, 1.0};
+
 
 extern "C" goatkit::WidgetDrawFunc get_widget_func(const char *name)
 {
@@ -87,8 +94,6 @@ static void draw_button(const Widget *w)
 	float bnaspect = sz.x / sz.y;
 
 	float pressed = w->get_pressed();
-	//float active = w->get_active();
-	float hover = w->get_under_mouse();
 	float vis = w->get_visibility();
 
 	if(vis < VIS_THRES) {
@@ -98,11 +103,9 @@ static void draw_button(const Widget *w)
 	float tor_rad = sz.x * 0.5 * vis;
 	float scale = LERP(1.0, 0.85, pressed);
 
-	float bcol[] = {
-		LERP(fgcol_off[0], fgcol[0], hover),
-		LERP(fgcol_off[1], fgcol[1], hover),
-		LERP(fgcol_off[2], fgcol[2], hover)
-	};
+	float fg[4], bg[4];
+	get_fgcolor(w, fg);
+	get_bgcolor(w, bg);
 
 	begin_drawing(w);
 
@@ -110,16 +113,16 @@ static void draw_button(const Widget *w)
 	glScalef(1, 1, 1.0 / sz.x);
 	glRotatef(90, 1, 0, 0);
 
-	glColor3f(bcol[0], bcol[1], bcol[2]);
+	glColor4fv(fg);
 	glutSolidTorus(scale * sz.y / 2.0, scale * tor_rad / 2.0, 18, 16);
 
 	glScalef(1.0 - 0.1 / bnaspect, 1.0, 1.0 - 0.1);
-	glColor3fv(bgcol);
+	glColor4fv(bg);
 	glutSolidTorus(scale * sz.y / 2.0, scale * tor_rad / 2.0, 18, 16);
 
 	if(vis >= 1.0) {
 		glTranslatef(-calc_text_width(w->get_text()) / 2.0, 0, -5);
-		glColor3f(bcol[0], bcol[1], bcol[2]);
+		glColor4fv(fg);
 		draw_text(0, 0, w->get_text());
 	}
 
@@ -141,10 +144,13 @@ static void draw_label(const Widget *w)
 		return;
 	}
 
+	float fg[4];
+	get_fgcolor(w, fg);
+
 	begin_drawing(w);
 
 	glTranslatef((sz.x - calc_text_width(w->get_text())) / 2.0, sz.y / 2.0, 0);
-	glColor4f(fgcol_off[0], fgcol_off[1], fgcol_off[2], vis);
+	glColor4fv(fg);
 	draw_text(0, 0, w->get_text());
 
 	end_drawing(w);
@@ -154,12 +160,14 @@ static void draw_slider(const Widget *w)
 {
 	Vec2 sz = w->get_size();
 	float vis = w->get_visibility();
-	float hover = w->get_under_mouse();
 
 	if(vis < VIS_THRES) {
 		return;
 	}
 
+	float fg[4], bg[4];
+	get_fgcolor(w, fg);
+	get_bgcolor(w, bg);
 
 	Slider *slider = (Slider*)w;
 	float pad = slider->get_padding();
@@ -171,11 +179,6 @@ static void draw_slider(const Widget *w)
 
 	float trough_sz = sz.x - 2.0 * pad;
 	float x = pad + trough_sz * slider->get_value_norm();
-
-	float fg[4] = {0, 0, 0, vis};
-	for(int i=0; i<3; i++) {
-		fg[i] = LERP(fgcol_off[i], fgcol[i], hover);
-	}
 
 	float act_height = sz.y / 2.0;
 
@@ -201,8 +204,8 @@ static void draw_slider(const Widget *w)
 		glEnd();
 	}
 
-	draw_rect(0, sz.y - act_height + act_height / 3, sz.x, act_height / 3, fg, bgcol);
-	draw_rect(x - handle_width / 2.0, sz.y - act_height, handle_width, act_height, fg, bgcol);
+	draw_rect(w, 0, sz.y - act_height + act_height / 3, sz.x, act_height / 3);
+	draw_rect(w, x - handle_width / 2.0, sz.y - act_height, handle_width, act_height);
 	draw_text(x - calc_text_width(valtext) / 2.0, act_height / 2.0, valtext);
 
 	end_drawing(w);
@@ -227,8 +230,13 @@ static void draw_text(float x, float y, const char *text)
 	}
 }
 
-static void draw_rect(float x, float y, float xsz, float ysz, float fg[4], float bg[4])
+static void draw_rect(const Widget *w, float x, float y, float xsz, float ysz)
 {
+	float fg[4], bg[4];
+
+	get_fgcolor(w, fg);
+	get_bgcolor(w, bg);
+
 	glBegin(GL_QUADS);
 	glColor4fv(bg);
 	glVertex2f(x, y);
@@ -244,4 +252,31 @@ static void draw_rect(float x, float y, float xsz, float ysz, float fg[4], float
 	glVertex2f(x + xsz, y + ysz);
 	glVertex2f(x, y + ysz);
 	glEnd();
+}
+
+
+static void get_fgcolor(const Widget *w, float *col)
+{
+	float hover = w->get_under_mouse();
+	float act = w->get_active();
+	float vis = w->get_visibility();
+
+	for(int i=0; i<4; i++) {
+		float c = LERP(fgcol_off[i], fgcol[i], hover);
+		col[i] = LERP(fgcol_inact[i], c, act);
+	}
+	col[3] *= vis;
+}
+
+static void get_bgcolor(const Widget *w, float *col)
+{
+	float hover = w->get_under_mouse();
+	float act = w->get_active();
+	float vis = w->get_visibility();
+
+	for(int i=0; i<4; i++) {
+		float c = LERP(bgcol_off[i], bgcol[i], hover);
+		col[i] = LERP(bgcol_inact[i], c, act);
+	}
+	col[3] *= vis;
 }
