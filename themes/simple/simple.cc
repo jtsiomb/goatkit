@@ -1,6 +1,13 @@
+#include <string.h>
 #include <string>
 #include <map>
 #include "goatkit.h"
+
+#ifndef _MSC_VER
+#include <alloca.h>
+#else
+#include <malloc.h>
+#endif
 
 #ifdef __APPLE__
 #include <GLUT/glut.h>
@@ -18,6 +25,7 @@ static void draw_button(const Widget *w);
 static void draw_checkbox(const Widget *w);
 static void draw_label(const Widget *w);
 static void draw_slider(const Widget *w);
+static void draw_textbox(const Widget *w);
 static float calc_text_width(const char *text);
 static void draw_text(float x, float y, const char *text);
 static void draw_rect(const Widget *w, float x, float y, float xsz, float ysz);
@@ -33,6 +41,7 @@ static struct {
 	{ "checkbox", draw_checkbox },
 	{ "label", draw_label },
 	{ "slider", draw_slider },
+	{ "textbox", draw_textbox },
 	{ 0, 0 }
 };
 
@@ -253,6 +262,46 @@ static void draw_slider(const Widget *w)
 	end_drawing(w);
 }
 
+static void draw_textbox(const Widget *w)
+{
+	if(!w->is_visible()) {
+		return;
+	}
+
+	Vec2 sz = w->get_size();
+
+	float fg[4];
+	get_fgcolor(w, fg);
+
+	TextBox *tbox = (TextBox*)w;
+
+	begin_drawing(w);
+
+	draw_rect(w, 0, 0, sz.x, sz.y);
+
+	const char *str = tbox->get_text();
+	glColor4fv(fg);
+	draw_text(2, 2.0 * sz.y / 3.0, str);
+
+	// draw the cursor
+	int cursor = tbox->get_cursor();
+	float cx = 1.0;
+
+	if(cursor > 0) {
+		char *buf = (char*)alloca(cursor + 1);
+		memcpy(buf, str, cursor);
+		buf[cursor] = 0;
+		cx += calc_text_width(buf);
+	}
+
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+	glColor4f(1.0 - fg[0], 1.0 - fg[1], 1.0 - fg[2], fg[3]);
+	draw_text(cx, 2.0 * sz.y / 3.0, "|");
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	end_drawing(w);
+}
+
 static float calc_text_width(const char *text)
 {
 	float res = 0.0f;
@@ -289,6 +338,9 @@ static void draw_rect(const Widget *w, float x, float y, float xsz, float ysz)
 	glVertex2f(x, y + ysz);
 	glEnd();
 
+	//glLineWidth(w->get_focus() + 1.0);
+	glLineWidth(1);
+
 	glBegin(GL_LINES);
 	glColor4fv(fg);
 
@@ -309,6 +361,8 @@ static void draw_rect(const Widget *w, float x, float y, float xsz, float ysz)
 	glVertex2f(x, y + DISP(ysz, vis));
 
 	glEnd();
+
+	glLineWidth(1);
 }
 
 

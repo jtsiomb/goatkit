@@ -37,6 +37,17 @@ enum EventType {
 	NUM_EVENTS
 };
 
+enum SpecialKeys {
+	KEY_ESCAPE = 27,
+	KEY_DELETE = 127,
+
+	KEY_F1 = 256, KEY_F2, KEY_F3, KEY_F4, KEY_F5, KEY_F6,
+	KEY_F7, KEY_F8, KEY_F9, KEY_F10, KEY_F11, KEY_F12,
+	KEY_LEFT, KEY_RIGHT, KEY_UP, KEY_DOWN,
+	KEY_HOME, KEY_END, KEY_PGUP, KEY_PGDOWN,
+	KEY_INSERT
+};
+
 struct ButtonEvent {
 	Vec2 pos;
 	int button;

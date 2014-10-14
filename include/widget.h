@@ -68,6 +68,13 @@ public:
 	virtual float get_under_mouse() const;
 	virtual bool is_under_mouse() const;
 
+	// input focus, managed by the screen
+	virtual bool can_focus() const;
+	virtual void focusin();
+	virtual void focusout();
+	virtual float get_focus() const;
+	virtual bool is_focused() const;
+
 	virtual void set_position(float x, float y);
 	virtual void set_position(const Vec2 &pos);
 	virtual const Vec2 &get_position() const;

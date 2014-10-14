@@ -30,7 +30,7 @@ struct WidgetImpl {
 	std::string name, text;
 	BBox box;
 
-	BoolAnim visible, active, press, hover;
+	BoolAnim visible, active, press, hover, focus;
 
 	struct {
 		EventCallback func;
@@ -172,6 +172,31 @@ float Widget::get_under_mouse() const
 bool Widget::is_under_mouse() const
 {
 	return widget->hover.get_state();
+}
+
+bool Widget::can_focus() const
+{
+	return false;
+}
+
+void Widget::focusin()
+{
+	widget->focus.change(true);
+}
+
+void Widget::focusout()
+{
+	widget->focus.change(false);
+}
+
+float Widget::get_focus() const
+{
+	return widget->focus.get_value();
+}
+
+bool Widget::is_focused() const
+{
+	return widget->focus.get_state();
 }
 
 void Widget::set_position(float x, float y)

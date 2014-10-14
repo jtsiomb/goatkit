@@ -74,6 +74,13 @@ static bool init()
 	button->set_callback(goatkit::EV_CLICK, callback);
 	scr.add_widget(button);
 
+	goatkit::TextBox *text = new goatkit::TextBox;
+	text->set_position(300, ypos += vsep);
+	text->set_size(200, 30);
+	text->set_text("foo");
+	text->set_callback(goatkit::EV_CHANGE, callback);
+	scr.add_widget(text);
+
 	goatkit::CheckBox *cbox = new goatkit::CheckBox;
 	cbox->set_position(300, ypos += vsep);
 	cbox->set_size(200, 20);
@@ -162,13 +169,57 @@ static void keyrelease(unsigned char key, int x, int y)
 	scr.sysev_keyboard(key, false);
 }
 
+static int translate_special(int key)
+{
+	switch(key) {
+	case GLUT_KEY_LEFT:
+		return goatkit::KEY_LEFT;
+
+	case GLUT_KEY_RIGHT:
+		return goatkit::KEY_RIGHT;
+
+	case GLUT_KEY_UP:
+		return goatkit::KEY_UP;
+
+	case GLUT_KEY_DOWN:
+		return goatkit::KEY_DOWN;
+
+	case GLUT_KEY_PAGE_UP:
+		return goatkit::KEY_PGUP;
+
+	case GLUT_KEY_PAGE_DOWN:
+		return goatkit::KEY_PGDOWN;
+
+	case GLUT_KEY_INSERT:
+		return goatkit::KEY_INSERT;
+
+	case GLUT_KEY_HOME:
+		return goatkit::KEY_HOME;
+
+	case GLUT_KEY_END:
+		return goatkit::KEY_END;
+
+	default:
+		if(key >= GLUT_KEY_F1 && key <= GLUT_KEY_F12) {
+			return goatkit::KEY_F1 + key - GLUT_KEY_F1;
+		}
+	}
+	return -1;
+}
+
 static void skeypress(int key, int x, int y)
 {
+	if((key = translate_special(key)) == -1) {
+		return;
+	}
 	scr.sysev_keyboard(key, true);
 }
 
 static void skeyrelease(int key, int x, int y)
 {
+	if((key = translate_special(key)) == -1) {
+		return;
+	}
 	scr.sysev_keyboard(key, false);
 }
 

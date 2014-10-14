@@ -15,17 +15,45 @@ GNU Lesser General Public License for more details.
 You should have received a copy of the GNU Lesser General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef GOATKIT_H_
-#define GOATKIT_H_
+#ifndef TEXTBOX_H_
+#define TEXTBOX_H_
 
-#include "screen.h"
 #include "widget.h"
-#include "button.h"
-#include "checkbox.h"
-#include "label.h"
-#include "textbox.h"
-#include "slider.h"
-#include "event.h"
-#include "theme.h"
 
-#endif	// GOATKIT_H_
+namespace goatkit {
+
+struct TextBoxImpl;
+
+class TextBox : public Widget {
+private:
+	TextBoxImpl *tbox;
+
+public:
+	TextBox();
+	virtual ~TextBox();
+
+	virtual const char *get_type_name() const;
+	virtual bool can_focus() const;
+
+	virtual void clear();
+
+	virtual void set_text(const char *t);
+	virtual const char *get_text() const;
+
+	virtual int set_cursor(int idx);
+	virtual int get_cursor() const;
+
+	virtual int cursor_begin();
+	virtual int cursor_end();
+	virtual int cursor_prev();
+	virtual int cursor_next();
+
+	virtual void insert(char c);
+
+	virtual void on_key(const KeyEvent &ev);
+	virtual void on_click();
+};
+
+}	// namespace goatkit
+
+#endif	// TEXTBOX_H_

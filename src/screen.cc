@@ -15,6 +15,7 @@ GNU Lesser General Public License for more details.
 You should have received a copy of the GNU Lesser General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <vector>
@@ -199,7 +200,15 @@ void Screen::sysev_mouse_button(int bn, bool press, float x, float y)
 		if(bn == 0) {
 			// left click gives input focus
 			// TODO: add input focus event in widget
-			scr->inp_focused = new_over;
+			if(new_over && new_over != scr->inp_focused && new_over->can_focus()) {
+				printf("input focus %p -> %p\n", (void*)scr->inp_focused, (void*)new_over);
+				new_over->focusin();
+
+				if(scr->inp_focused) {
+					scr->inp_focused->focusout();
+				}
+				scr->inp_focused = new_over;
+			}
 		}
 
 		scr->pressed[bn] = new_over;
