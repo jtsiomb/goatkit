@@ -248,8 +248,8 @@ static void draw_slider(const Widget *w)
 		glBegin(GL_LINES);
 		glColor4fv(fg);
 		for(int i=0; i<num_ticks; i++) {
-			glVertex2f(x, sz.y / 3.0);
-			glVertex2f(x, sz.y / 2.0);
+			glVertex2f(x + 0.5, sz.y / 3.0 + 0.5);
+			glVertex2f(x + 0.5, sz.y / 2.0 + 0.5);
 			x += dx;
 		}
 		glEnd();
@@ -338,8 +338,10 @@ static void draw_rect(const Widget *w, float x, float y, float xsz, float ysz)
 	glVertex2f(x, y + ysz);
 	glEnd();
 
-	//glLineWidth(w->get_focus() + 1.0);
-	glLineWidth(1);
+	glLineWidth(w->get_focus() + 1.0);
+
+	glPushMatrix();
+	glTranslatef(0.5, 0.5, 0);
 
 	glBegin(GL_LINES);
 	glColor4fv(fg);
@@ -361,6 +363,7 @@ static void draw_rect(const Widget *w, float x, float y, float xsz, float ysz)
 	glVertex2f(x, y + DISP(ysz, vis));
 
 	glEnd();
+	glPopMatrix();
 
 	glLineWidth(1);
 }
