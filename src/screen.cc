@@ -160,11 +160,11 @@ bool Screen::is_visible() const
 
 bool Screen::grab_mouse(Widget *w)
 {
-	if(scr->mgrab) {
-		return false;
+	if(!scr->mgrab || !w) {
+		scr->mgrab = w;
+		return true;
 	}
-	scr->mgrab = w;
-	return true;
+	return false;
 }
 
 void Screen::draw() const
