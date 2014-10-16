@@ -32,6 +32,7 @@ struct ScreenImpl {
 	BBox box;
 
 	Widget *inp_focused, *over, *pressed[MAX_BUTTONS];
+	Widget *mgrab;
 };
 
 static Vec2 world_to_scr(const ScreenImpl *scr, const Vec2 &v);
@@ -50,6 +51,7 @@ Screen::Screen()
 	}
 
 	scr->visible = true;
+	scr->mgrab = 0;
 }
 
 Screen::~Screen()
@@ -106,6 +108,8 @@ void Screen::add_widget(Widget *w)
 	} else {
 		w->hide();
 	}
+
+	w->set_screen(this);
 }
 
 int Screen::get_widget_count() const
@@ -154,6 +158,15 @@ bool Screen::is_visible() const
 	return scr->visible;
 }
 
+bool Screen::grab_mouse(Widget *w)
+{
+	if(scr->mgrab) {
+		return false;
+	}
+	scr->mgrab = w;
+	return true;
+}
+
 void Screen::draw() const
 {
 	for(size_t i=0; i<scr->widgets.size(); i++) {
@@ -189,7 +202,7 @@ void Screen::sysev_mouse_button(int bn, bool press, float x, float y)
 {
 	Event ev;
 	Vec2 pt = world_to_scr(scr, Vec2(x, y));
-	Widget *new_over = find_widget_at(scr, pt);
+	Widget *new_over = scr->mgrab ? scr->mgrab : find_widget_at(scr, pt);
 
 	ev.type = EV_MOUSE_BUTTON;
 	ev.button.button = bn;
@@ -246,7 +259,7 @@ void Screen::sysev_mouse_motion(float x, float y)
 {
 	Event ev;
 	Vec2 pt = world_to_scr(scr, Vec2(x, y));
-	Widget *new_over = find_widget_at(scr, pt);
+	Widget *new_over = scr->mgrab ? scr->mgrab : find_widget_at(scr, pt);
 
 	// if we're not over the same widget any more send the leave/enter events
 	if(scr->over != new_over) {

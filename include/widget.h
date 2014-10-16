@@ -27,14 +27,18 @@ struct BBox {
 	Vec2 bmin, bmax;
 };
 
+class Screen;
 class Widget;
 struct WidgetImpl;
 
 typedef void (*EventCallback)(Widget*, const Event &ev, void *cls);
 
 class Widget {
-private:
+protected:
 	WidgetImpl *widget;
+
+	virtual void set_screen(Screen *scr);
+	Screen *get_screen() const;
 
 public:
 	Widget();
@@ -107,6 +111,8 @@ public:
 
 	// external callback setting
 	virtual void set_callback(EventType evtype, EventCallback func, void *cls = 0);
+
+	friend class Screen;
 };
 
 }

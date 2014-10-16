@@ -18,6 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <stdio.h>
 #include <math.h>
 #include "slider.h"
+#include "screen.h"
 
 namespace goatkit {
 
@@ -129,8 +130,14 @@ float Slider::get_step() const
 void Slider::on_mouse_button(const ButtonEvent &ev)
 {
 	if(ev.button == 0) {
+		Screen *scr = get_screen();
+
 		slider->dragging = ev.press;
-		if(!ev.press) {
+		if(ev.press) {
+			if(scr) scr->grab_mouse(this);
+		} else {
+			if(scr) scr->grab_mouse(0);
+
 			// on release, if the value has changed send the appropriate event
 			if(slider->prev_value != slider->value) {
 				Event ev;

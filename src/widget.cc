@@ -23,10 +23,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "widget.h"
 #include "boolanm.h"
 #include "theme.h"
+#include "screen.h"
 
 namespace goatkit {
 
 struct WidgetImpl {
+	Screen *scr;
 	std::string name, text;
 	BBox box;
 
@@ -44,6 +46,7 @@ Widget::Widget()
 	static int widget_count;
 
 	widget = new WidgetImpl;
+	widget->scr = 0;
 
 	std::stringstream sstr;
 	sstr << get_type_name() << widget_count++;
@@ -64,6 +67,16 @@ Widget::Widget()
 Widget::~Widget()
 {
 	delete widget;
+}
+
+void Widget::set_screen(Screen *scr)
+{
+	widget->scr = scr;
+}
+
+Screen *Widget::get_screen() const
+{
+	return widget->scr;
 }
 
 const char *Widget::get_type_name() const

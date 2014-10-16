@@ -31,26 +31,28 @@ private:
 
 public:
 	Screen();
-	virtual ~Screen();
+	~Screen();
 
-	virtual void set_position(float x, float y);
-	virtual void set_position(const Vec2 &pos);
-	virtual const Vec2 &get_position() const;
-	virtual void set_size(float x, float y);
-	virtual void set_size(const Vec2 &sz);
-	virtual const Vec2 get_size() const;
-	virtual const BBox &get_box() const;
+	void set_position(float x, float y);
+	void set_position(const Vec2 &pos);
+	const Vec2 &get_position() const;
+	void set_size(float x, float y);
+	void set_size(const Vec2 &sz);
+	const Vec2 get_size() const;
+	const BBox &get_box() const;
 
-	virtual void add_widget(Widget *w);
-	virtual int get_widget_count() const;
-	virtual Widget *get_widget(int idx) const;
-	virtual Widget *get_widget(const char *name) const;
+	void add_widget(Widget *w);
+	int get_widget_count() const;
+	Widget *get_widget(int idx) const;
+	Widget *get_widget(const char *name) const;
 
-	virtual void show();
-	virtual void hide();
-	virtual bool is_visible() const;
+	void show();
+	void hide();
+	bool is_visible() const;
 
-	virtual void draw() const;
+	bool grab_mouse(Widget *w);
+
+	void draw() const;
 
 	// window system events used to generate widget events (see event.h)
 	void sysev_keyboard(int key, bool press);
