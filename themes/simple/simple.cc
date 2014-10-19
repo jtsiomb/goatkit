@@ -17,6 +17,8 @@
 
 #include <drawtext.h>
 
+#define FONT	GLUT_BITMAP_HELVETICA_18
+
 using namespace goatkit;
 
 typedef void (*DrawFunc)(const Widget*);
@@ -280,15 +282,30 @@ static void draw_textbox(const Widget *w)
 	draw_rect(w, 0, 0, sz.x, sz.y);
 
 	const char *str = tbox->get_text();
+	char *buf = (char*)alloca(strlen(str) + 1);
+
+	// figure out how many characters fit in the textbox
+	float tsz = 0.0;
+	const char *sptr = str;
+	char *dptr = buf;
+	while(*sptr) {
+		float nsz = tsz + glutBitmapWidth(FONT, *sptr);
+		if(nsz >= sz.x) {
+			break;
+		}
+		*dptr++ = *sptr++;
+		tsz = nsz;
+	}
+	*dptr = 0;
+
 	glColor4fv(fg);
-	draw_text(2, 2.0 * sz.y / 3.0, str);
+	draw_text(2, 2.0 * sz.y / 3.0, buf);
 
 	// draw the cursor
 	int cursor = tbox->get_cursor();
 	float cx = 1.0;
 
 	if(cursor > 0) {
-		char *buf = (char*)alloca(cursor + 1);
 		memcpy(buf, str, cursor);
 		buf[cursor] = 0;
 		cx += calc_text_width(buf);
@@ -307,7 +324,7 @@ static float calc_text_width(const char *text)
 	float res = 0.0f;
 
 	while(*text) {
-		res += glutBitmapWidth(GLUT_BITMAP_HELVETICA_18, *text++);
+		res += glutBitmapWidth(FONT, *text++);
 	}
 	return res;
 }
@@ -317,7 +334,7 @@ static void draw_text(float x, float y, const char *text)
 	glRasterPos2f(x, y);
 
 	while(*text) {
-		glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, *text++);
+		glutBitmapCharacter(FONT, *text++);
 	}
 }
 
