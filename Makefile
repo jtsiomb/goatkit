@@ -1,25 +1,63 @@
-src = test.cc $(wildcard src/*.cc)
+PREFIX = /usr/local
+
+src = $(wildcard src/*.cc)
 obj = $(src:.cc=.o)
 dep = $(obj:.o=.d)
+name = goatkit
+alib = lib$(name).a
 
-bin = test
+so_major = 0
+so_minor = 1
 
-CFLAGS = -pedantic -Wall -g -Iinclude -Isrc
+CFLAGS = -pedantic -Wall -g $(pic) -Iinclude -Isrc
 CXXFLAGS = $(CFLAGS)
 LDFLAGS = $(libgl) -lpthread -ldl
 
 ifeq ($(shell uname -s), Darwin)
-	libgl = -framework OpenGL -framework GLUT
-	CFLAGS += -Wno-deprecated-declarations
+	libgl = -framework OpenGL
+
+	solib = lib$(name).dylib
+	shared = -dynamiclib
 else
-	libgl = -lGL -lGLU -lglut
+	libgl = -lGL
+
+	ldlink = lib$(name).so
+	soname = $(ldlink).$(so_major)
+	solib = $(soname).$(so_minor)
+	shared = -shared -Wl,-soname=$(soname)
+	pic = -fPIC
 endif
 
-$(bin): $(obj)
-	$(CXX) -o $@ $(obj) $(LDFLAGS)
+.PHONY: all
+all: static shared
+
+.PHONY: static
+static: $(alib)
+
+.PHONY: shared
+shared: $(solib)
+
+.PHONY: themes
+themes:
+	$(MAKE) -C themes
+
+.PHONY: themes-clean
+themes-clean:
+	$(MAKE) -C themes clean
+
+$(alib): $(obj)
+	$(AR) rcs $@ $(obj)
+
+$(solib): $(obj)
+	$(CXX) -o $@ $(shared) $(obj) $(LDFLAGS)
+	@[ -n "$(soname)" ] && \
+		echo 'creating symlinks ...' && \
+		rm -f $(soname) $(ldlink) && \
+		ln -s $(solib) $(soname) && \
+		ln -s $(soname) $(ldlink) || \
+		true
 
 -include $(dep)
-
 
 %.d: %.c
 	@$(CPP) $(CFLAGS) $< -MM -MT $(@:.d=.o) >$@
@@ -29,4 +67,34 @@ $(bin): $(obj)
 
 .PHONY: clean
 clean:
-	rm -f $(obj) $(bin) $(dep)
+	rm -f $(obj) $(solib) $(alib)
+
+.PHONY: dep
+dep:
+	rm -f $(dep)
+
+.PHONY: install
+install: $(solib) $(alib)
+	mkdir -p $(DESTDIR)$(PREFIX)/include/goatkit $(DESTDIR)$(PREFIX)/lib
+	cp include/*.h $(DESTDIR)$(PREFIX)/include/goatkit/
+	cp $(alib) $(DESTDIR)$(PREFIX)/lib/$(alib)
+	cp $(solib) $(DESTDIR)$(PREFIX)/lib/$(solib)
+	@[ -n "$(soname)" ] && \
+		echo 'installing symlinks ...' && \
+		cd $(DESTDIR)$(PREFIX)/lib && \
+		rm -f $(soname) $(ldlink) && \
+		ln -s $(solib) $(soname) && \
+		ln -s $(soname) $(ldlink) || \
+		true
+
+.PHONY: uninstall
+uninstall:
+	rm -f $(DESTDIR)$(PREFIX)/include/goatkit/*.h
+	rmdir $(DESTDIR)$(PREFIX)/include/goatkit
+	rm -f $(DESTDIR)$(PREFIX)/lib/$(alib)
+	rm -f $(DESTDIR)$(PREFIX)/lib/$(solib)
+	@[ -n "$(soname)" ] && \
+		echo 'removing symlinks ...' && \
+		rm -f $(DESTDIR)$(PREFIX)/lib/$(soname) && \
+		rm -f $(DESTDIR)$(PREFIX)/lib/$(ldlink) || \
+		true
