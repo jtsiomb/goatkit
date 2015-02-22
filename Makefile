@@ -45,6 +45,14 @@ themes:
 themes-clean:
 	$(MAKE) -C themes clean
 
+.PHONY: themes-install
+themes-install:
+	$(MAKE) -C themes install
+
+.PHONY: themes-uninstall
+themes-uninstall:
+	$(MAKE) -C themes uninstall
+
 $(alib): $(obj)
 	$(AR) rcs $@ $(obj)
 
@@ -74,7 +82,7 @@ dep:
 	rm -f $(dep)
 
 .PHONY: install
-install: $(solib) $(alib)
+install: $(solib) $(alib) themes-install
 	mkdir -p $(DESTDIR)$(PREFIX)/include/goatkit $(DESTDIR)$(PREFIX)/lib
 	cp include/*.h $(DESTDIR)$(PREFIX)/include/goatkit/
 	cp $(alib) $(DESTDIR)$(PREFIX)/lib/$(alib)
@@ -88,7 +96,7 @@ install: $(solib) $(alib)
 		true
 
 .PHONY: uninstall
-uninstall:
+uninstall: themes-uninstall
 	rm -f $(DESTDIR)$(PREFIX)/include/goatkit/*.h
 	rmdir $(DESTDIR)$(PREFIX)/include/goatkit
 	rm -f $(DESTDIR)$(PREFIX)/lib/$(alib)
