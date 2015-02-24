@@ -1,3 +1,5 @@
+PREFIX ?= /usr/local
+
 src = $(wildcard *.cc)
 obj = $(src:.cc=.o)
 lib_so = simple.gtheme
@@ -21,3 +23,12 @@ $(lib_so): $(obj)
 .PHONY: clean
 clean:
 	rm -f $(obj) $(bin)
+
+.PHONY: install
+install: $(lib_so)
+	mkdir -p $(DESTDIR)$(PREFIX)/share/goatkit
+	cp $(lib_so) $(DESTDIR)$(PREFIX)/share/goatkit/$(lib_so)
+
+.PHONY: uninstall
+uninstall:
+	rm -f $(DESTDIR)$(PREFIX)/share/goatkit/$(lib_so)

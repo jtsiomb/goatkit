@@ -5,3 +5,4 @@
 \.so$
 ^test$
 \.gtheme$
+^config.h$

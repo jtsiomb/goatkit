@@ -1,5 +1,3 @@
-PREFIX = /usr/local
-
 src = $(wildcard src/*.cc)
 obj = $(src:.cc=.o)
 dep = $(obj:.o=.d)
@@ -9,7 +7,14 @@ alib = lib$(name).a
 so_major = 0
 so_minor = 1
 
-CFLAGS = -pedantic -Wall -g $(pic) -Iinclude -Isrc
+ifdef cfg_optim
+	opt = -O3
+endif
+ifdef cfg_dbg
+	dbg = -g
+endif
+
+CFLAGS = -pedantic -Wall $(opt) $(dbg) $(pic) -Iinclude -Isrc -I.
 CXXFLAGS = $(CFLAGS)
 LDFLAGS = $(libgl) -lpthread -ldl
 
@@ -84,7 +89,7 @@ dep:
 .PHONY: install
 install: $(solib) $(alib) themes-install
 	mkdir -p $(DESTDIR)$(PREFIX)/include/goatkit $(DESTDIR)$(PREFIX)/lib
-	cp include/*.h $(DESTDIR)$(PREFIX)/include/goatkit/
+	cp include/*.h config.h $(DESTDIR)$(PREFIX)/include/goatkit/
 	cp $(alib) $(DESTDIR)$(PREFIX)/lib/$(alib)
 	cp $(solib) $(DESTDIR)$(PREFIX)/lib/$(solib)
 	@[ -n "$(soname)" ] && \

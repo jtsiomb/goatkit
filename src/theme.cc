@@ -15,6 +15,7 @@ GNU Lesser General Public License for more details.
 You should have received a copy of the GNU Lesser General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+#include "config.h"
 #include <stdio.h>
 #include <vector>
 #include <string>
@@ -51,7 +52,10 @@ struct ThemeImpl {
 
 Theme *theme;
 static std::vector<std::string> search_paths;
-
+static const char *fallback_paths[] = {
+	PREFIX "/share/goatkit",
+	0
+};
 
 void add_theme_path(const char *path)
 {
@@ -96,6 +100,17 @@ bool Theme::load(const char *name)
 
 			if((impl->so = dlopen(path.c_str(), RTLD_LAZY))) {
 				break;
+			}
+		}
+
+		// try the fallback paths
+		if(!impl->so) {
+			for(int i=0; fallback_paths[i]; i++) {
+				std::string path = std::string(fallback_paths[i]) + "/" + fname;
+
+				if((impl->so = dlopen(path.c_str(), RTLD_LAZY))) {
+					break;
+				}
 			}
 		}
 
