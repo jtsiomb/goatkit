@@ -1,6 +1,6 @@
 /*
 GoatKit - a themable/animated widget toolkit for games
-Copyright (C) 2014  John Tsiombikas <nuclear@member.fsf.org>
+Copyright (C) 2014-2015 John Tsiombikas <nuclear@member.fsf.org>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Lesser General Public License as published by
@@ -21,6 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <string>
 #include <map>
 #include <algorithm>
+#include <string.h>
 #include "theme.h"
 #include "widget.h"
 
@@ -35,12 +36,22 @@ static void *dlsym(void *so, const char *symbol);
 #include <dlfcn.h>
 #endif
 
+#ifdef HAVE_OPENGL_H
+#include "opengl.h"
+
+#else
+
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
 #else
 #include <GL/gl.h>
 #endif
 
+#endif	/* HAVE_OPENGL_H_ */
+
+#ifndef PREFIX
+#define PREFIX	"/usr/local"
+#endif
 
 namespace goatkit {
 
@@ -56,6 +67,10 @@ static const char *fallback_paths[] = {
 	PREFIX "/share/goatkit",
 	0
 };
+
+typedef std::map<std::string, Theme*> ThemeMap;
+static ThemeMap *themes;
+
 
 void add_theme_path(const char *path)
 {
@@ -74,11 +89,51 @@ void add_theme_path(const char *path)
 	search_paths.push_back(s);
 }
 
+void register_theme(const char *name, Theme *theme)
+{
+	if(!themes) {
+		themes = new ThemeMap;
+	}
+
+	Theme *prev = (*themes)[name];
+	if(prev) {
+		delete prev;
+	}
+	(*themes)[name] = theme;
+}
+
+Theme *get_theme(const char *name)
+{
+	// first search in the already registered themes
+	ThemeMap::const_iterator it = themes->find(name);
+	if(it != themes->end()) {
+		return it->second;
+	}
+
+	// then try loading it from a theme plugin
+	Theme *theme = new Theme;
+	if(theme->load(name)) {
+		return theme;
+	}
+
+	fprintf(stderr, "[goatkit] theme \"%s\" not found!\n", name);
+	return 0;
+}
+
 Theme::Theme()
 {
 	impl = new ThemeImpl;
 	impl->so = 0;
 	impl->lookup_theme_draw_func = 0;
+}
+
+Theme::Theme(const char *name, WidgetLookupFunc func)
+{
+	impl = new ThemeImpl;
+	impl->so = 0;
+	impl->lookup_theme_draw_func = func;
+
+	register_theme(name, this);
 }
 
 Theme::~Theme()
@@ -128,13 +183,16 @@ bool Theme::load(const char *name)
 		return false;
 	}
 
+	register_theme(name, this);
 	return true;
 }
 
 void Theme::unload()
 {
 	if(impl->so) {
-		dlclose(impl->so);
+		if(impl->so) {
+			dlclose(impl->so);
+		}
 		impl->so = 0;
 	}
 	impl->func_cache.clear();
@@ -186,8 +244,10 @@ void default_draw_func(const Widget *w)
 	Vec2 sz = w->get_size();
 	float aspect = sz.x / sz.y;
 
+#if !defined(GL_ES_VERSION_2_0)
 	glPushAttrib(GL_ENABLE_BIT);
 	glEnable(GL_TEXTURE_2D);
+#endif
 	glBindTexture(GL_TEXTURE_2D, tex);
 
 	float offs = w->get_pressed() * 0.1 * sz.y;
@@ -215,7 +275,9 @@ void default_draw_func(const Widget *w)
 
 	glPopMatrix();
 
+#ifndef GL_ES_VERSION_2_0
 	glPopAttrib();
+#endif
 }
 
 }	// namespace goatkit

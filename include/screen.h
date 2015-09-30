@@ -1,6 +1,6 @@
 /*
 GoatKit - a themable/animated widget toolkit for games
-Copyright (C) 2014  John Tsiombikas <nuclear@member.fsf.org>
+Copyright (C) 2014-2015 John Tsiombikas <nuclear@member.fsf.org>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Lesser General Public License as published by
@@ -49,6 +49,9 @@ public:
 	void show();
 	void hide();
 	bool is_visible() const;
+	float get_visibility() const;
+	void set_visibility_transition(long msec);
+	long get_visibility_transition() const;
 
 	bool grab_mouse(Widget *w);
 

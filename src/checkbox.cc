@@ -1,6 +1,6 @@
 /*
 GoatKit - a themable/animated widget toolkit for games
-Copyright (C) 2014  John Tsiombikas <nuclear@member.fsf.org>
+Copyright (C) 2014-2015  John Tsiombikas <nuclear@member.fsf.org>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Lesser General Public License as published by
@@ -69,6 +69,16 @@ void CheckBox::toggle()
 	} else {
 		check();
 	}
+}
+
+void CheckBox::set_toggle_transition(long msec)
+{
+	cbox->checked.set_transition_duration(msec);
+}
+
+long CheckBox::get_toggle_transition() const
+{
+	return cbox->checked.get_transition_duration();
 }
 
 void CheckBox::on_click()

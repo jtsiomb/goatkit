@@ -1,6 +1,6 @@
 /*
 GoatKit - a themable/animated widget toolkit for games
-Copyright (C) 2014  John Tsiombikas <nuclear@member.fsf.org>
+Copyright (C) 2014-2015 John Tsiombikas <nuclear@member.fsf.org>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Lesser General Public License as published by
@@ -124,6 +124,16 @@ bool Widget::is_visible() const
 	return widget->visible.get_state();
 }
 
+void Widget::set_visibility_transition(long msec)
+{
+	widget->visible.set_transition_duration(msec);
+}
+
+long Widget::get_visibility_transition() const
+{
+	return widget->visible.get_transition_duration();
+}
+
 void Widget::activate()
 {
 	widget->active.change(true);
@@ -144,6 +154,16 @@ bool Widget::is_active() const
 	return widget->active.get_state();
 }
 
+void Widget::set_active_transition(long msec)
+{
+	widget->active.set_transition_duration(msec);
+}
+
+long Widget::get_active_transition() const
+{
+	return widget->active.get_transition_duration();
+}
+
 void Widget::press()
 {
 	widget->press.change(true);
@@ -162,6 +182,16 @@ float Widget::get_pressed() const
 bool Widget::is_pressed() const
 {
 	return widget->press.get_state();
+}
+
+void Widget::set_press_transition(long msec)
+{
+	widget->press.set_transition_duration(msec);
+}
+
+long Widget::get_press_transition() const
+{
+	return widget->press.get_transition_duration();
 }
 
 void Widget::mousein()
@@ -187,6 +217,16 @@ bool Widget::is_under_mouse() const
 	return widget->hover.get_state();
 }
 
+void Widget::set_hover_transition(long msec)
+{
+	widget->hover.set_transition_duration(msec);
+}
+
+long Widget::get_hover_transition() const
+{
+	return widget->hover.get_transition_duration();
+}
+
 bool Widget::can_focus() const
 {
 	return false;
@@ -210,6 +250,16 @@ float Widget::get_focus() const
 bool Widget::is_focused() const
 {
 	return widget->focus.get_state();
+}
+
+void Widget::set_focus_transition(long msec)
+{
+	widget->focus.set_transition_duration(msec);
+}
+
+long Widget::get_focus_transition() const
+{
+	return widget->focus.get_transition_duration();
 }
 
 void Widget::set_position(float x, float y)
