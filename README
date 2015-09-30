@@ -12,10 +12,12 @@ However it's fully animatable, and themable, which are extremely important for
 making flashy UIs for the various game menu and options screens.
 
 Themable: the library itself doesn't do any drawing at all. Widget drawing is
-instead left to plugin themes (which are simple shared libraries/dlls), which
-can completely define the visuals and animations of any kind of widget. The
+instead left to plugin themes (simple shared libraries/dlls), which can
+completely define the visuals and animations of any kind of widget. The
 intention is to have a different theme made for each game, that fits the game's
-particular visual style.
+particular visual style.  Theme plugins can also be compiled as part of the
+application, for ease of use where loading external plugins would be
+inconvenient.
 
 Animatable: all typically boolean properties in regular toolkits, such as
 being visible, active, or hovered, are floating point values in the [0, 1]
@@ -34,8 +36,8 @@ See COPYING and COPYING.LESSER for more details.
 
 3. Download
 
-project page and main mercurial (hg) repo: http://code.google.com/p/goatkit
-github mirror: http://github.com/jtsiomb/goatkit
+website: http://nuclear.mutantstargoat.com/sw/goatkit
+github (source repository): http://github.com/jtsiomb/goatkit
 
 4. Contact
 
