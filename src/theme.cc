@@ -117,6 +117,7 @@ Theme *get_theme(const char *name)
 	}
 
 	fprintf(stderr, "[goatkit] theme \"%s\" not found!\n", name);
+	delete theme;
 	return 0;
 }
 
