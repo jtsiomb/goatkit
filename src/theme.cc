@@ -1,6 +1,6 @@
 /*
 GoatKit - a themable/animated widget toolkit for games
-Copyright (C) 2014-2015 John Tsiombikas <nuclear@member.fsf.org>
+Copyright (C) 2014-2018 John Tsiombikas <nuclear@member.fsf.org>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Lesser General Public License as published by
@@ -191,9 +191,7 @@ bool Theme::load(const char *name)
 void Theme::unload()
 {
 	if(impl->so) {
-		if(impl->so) {
-			dlclose(impl->so);
-		}
+		dlclose(impl->so);
 		impl->so = 0;
 	}
 	impl->func_cache.clear();
@@ -297,6 +295,9 @@ static void dlclose(void *so)
 
 static void *dlsym(void *so, const char *symbol)
 {
+	if(!so) {
+		so = GetModuleHandle(0);
+	}
 	return (void*)GetProcAddress(so, symbol);
 }
 #endif

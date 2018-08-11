@@ -1,6 +1,6 @@
 /*
 GoatKit - a themable/animated widget toolkit for games
-Copyright (C) 2014-2015 John Tsiombikas <nuclear@member.fsf.org>
+Copyright (C) 2014-2018 John Tsiombikas <nuclear@member.fsf.org>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Lesser General Public License as published by
@@ -15,8 +15,8 @@ GNU Lesser General Public License for more details.
 You should have received a copy of the GNU Lesser General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef THEME_H_
-#define THEME_H_
+#ifndef GOATKIT_THEME_H_
+#define GOATKIT_THEME_H_
 
 #define GOATKIT_BUILTIN_THEME(n, f)	\
 	static goatkit::Theme goatkit_theme##__LINE__(n, f)
@@ -55,4 +55,4 @@ extern Theme *theme;	// the current theme
 
 }	// namespace goatkit
 
-#endif	// THEME_H_
+#endif	// GOATKIT_THEME_H_

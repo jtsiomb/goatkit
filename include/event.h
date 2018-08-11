@@ -1,6 +1,6 @@
 /*
 GoatKit - a themable/animated widget toolkit for games
-Copyright (C) 2014  John Tsiombikas <nuclear@member.fsf.org>
+Copyright (C) 2014-2018  John Tsiombikas <nuclear@member.fsf.org>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Lesser General Public License as published by
@@ -15,8 +15,8 @@ GNU Lesser General Public License for more details.
 You should have received a copy of the GNU Lesser General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef EVENT_H_
-#define EVENT_H_
+#ifndef GOATKIT_EVENT_H_
+#define GOATKIT_EVENT_H_
 
 #include "vec.h"
 
@@ -80,4 +80,4 @@ const char *event_type_name(EventType type);
 
 }	// namespace goatkit
 
-#endif	// EVENT_H_
+#endif	// GOATKIT_EVENT_H_

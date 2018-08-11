@@ -1,6 +1,6 @@
 /*
 GoatKit - a themable/animated widget toolkit for games
-Copyright (C) 2014  John Tsiombikas <nuclear@member.fsf.org>
+Copyright (C) 2014-2018  John Tsiombikas <nuclear@member.fsf.org>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Lesser General Public License as published by
