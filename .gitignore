@@ -1,0 +1,12 @@
+*.o
+*.d
+*.swp
+*.gtheme
+test/test
+config.h
+*.a
+*.so
+*.so.*
+*.dll
+*.exe
+Makefile
