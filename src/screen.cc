@@ -186,6 +186,11 @@ bool Screen::grab_mouse(Widget *w)
 	return false;
 }
 
+Widget *Screen::get_mouse_grab() const
+{
+	return scr->mgrab;
+}
+
 void Screen::draw() const
 {
 	for(size_t i=0; i<scr->widgets.size(); i++) {

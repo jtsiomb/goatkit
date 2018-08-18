@@ -54,6 +54,7 @@ public:
 	long get_visibility_transition() const;
 
 	bool grab_mouse(Widget *w);
+	Widget *get_mouse_grab() const;
 
 	void draw() const;
 

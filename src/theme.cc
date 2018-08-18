@@ -28,6 +28,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #ifdef WIN32
 #include <windows.h>
 
+#define RTLD_LAZY	0
+
 static void *dlopen(const char *name, int flags);
 static void dlclose(void *so);
 static void *dlsym(void *so, const char *symbol);
@@ -290,7 +292,7 @@ static void *dlopen(const char *name, int flags)
 
 static void dlclose(void *so)
 {
-	FreeLibrary(so);
+	FreeLibrary((HMODULE)so);
 }
 
 static void *dlsym(void *so, const char *symbol)
@@ -298,6 +300,6 @@ static void *dlsym(void *so, const char *symbol)
 	if(!so) {
 		so = GetModuleHandle(0);
 	}
-	return (void*)GetProcAddress(so, symbol);
+	return (void*)GetProcAddress((HMODULE)so, symbol);
 }
 #endif
